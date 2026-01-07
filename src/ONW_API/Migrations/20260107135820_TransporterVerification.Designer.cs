@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ONW_API.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using ONW_API.Infrastructure.Data;
 namespace ONW_API.Migrations
 {
     [DbContext(typeof(OnWayDbContext))]
-    partial class OnWayDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260107135820_TransporterVerification")]
+    partial class TransporterVerification
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,20 +33,17 @@ namespace ONW_API.Migrations
 
                     b.Property<string>("Code")
                         .IsRequired()
-                        .HasMaxLength(6)
-                        .HasColumnType("nvarchar(6)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("ExpiresAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                    b.Property<Guid>("TransporterId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.ToTable("TransporterVerifications", (string)null);
+                    b.ToTable("TransporterVerifications");
                 });
 
             modelBuilder.Entity("OnWay.API.Domain.Entities.Transporter", b =>
@@ -55,6 +55,9 @@ namespace ONW_API.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -63,77 +66,6 @@ namespace ONW_API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Transporters", (string)null);
-                });
-
-            modelBuilder.Entity("ONW_API.Domain.Entities.TransporterVerification", b =>
-                {
-                    b.OwnsOne("OnWay.Domain.Transporters.ValueObjects.Email", "Email", b1 =>
-                        {
-                            b1.Property<Guid>("TransporterVerificationId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<string>("Value")
-                                .IsRequired()
-                                .HasMaxLength(150)
-                                .HasColumnType("nvarchar(150)")
-                                .HasColumnName("Email");
-
-                            b1.HasKey("TransporterVerificationId");
-
-                            b1.HasIndex("Value")
-                                .IsUnique();
-
-                            b1.ToTable("TransporterVerifications");
-
-                            b1.WithOwner()
-                                .HasForeignKey("TransporterVerificationId");
-                        });
-
-                    b.OwnsOne("OnWay.Domain.Transporters.ValueObjects.Password", "Password", b1 =>
-                        {
-                            b1.Property<Guid>("TransporterVerificationId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<string>("Hash")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)")
-                                .HasColumnName("PasswordHash");
-
-                            b1.HasKey("TransporterVerificationId");
-
-                            b1.ToTable("TransporterVerifications");
-
-                            b1.WithOwner()
-                                .HasForeignKey("TransporterVerificationId");
-                        });
-
-                    b.OwnsOne("OnWay.Domain.Transporters.ValueObjects.PhoneNumber", "Phone", b1 =>
-                        {
-                            b1.Property<Guid>("TransporterVerificationId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<string>("Value")
-                                .IsRequired()
-                                .HasMaxLength(20)
-                                .HasColumnType("nvarchar(20)")
-                                .HasColumnName("Phone");
-
-                            b1.HasKey("TransporterVerificationId");
-
-                            b1.ToTable("TransporterVerifications");
-
-                            b1.WithOwner()
-                                .HasForeignKey("TransporterVerificationId");
-                        });
-
-                    b.Navigation("Email")
-                        .IsRequired();
-
-                    b.Navigation("Password")
-                        .IsRequired();
-
-                    b.Navigation("Phone")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("OnWay.API.Domain.Entities.Transporter", b =>
