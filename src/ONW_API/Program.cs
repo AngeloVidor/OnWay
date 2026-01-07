@@ -1,13 +1,18 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using ONW_API.Application.Auth;
+using ONW_API.Application.Drivers;
 using ONW_API.Application.Tokens;
 using ONW_API.Application.Transporters;
 using ONW_API.Domain.Repositories;
 using ONW_API.Infrastructure.Auth;
 using ONW_API.Infrastructure.Data;
 using ONW_API.Infrastructure.Repositories;
+using ONW_API.Infrastructure.Security;
 using ONW_API.Infrastructure.SMTP;
 using OnWay.Application.Email;
 using OnWay.Application.VerifyAccount;
@@ -62,7 +67,9 @@ builder.Services.AddScoped<ITokenService, JwtTokenService>();
 builder.Services.AddScoped<ITransporterRepository, TransporterRepository>();
 builder.Services.AddScoped<ITransporterVerificationRepository, TransporterVerificationRepository>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
+builder.Services.AddScoped<IDriverRepository, DriverRepository>();
 
+builder.Services.AddScoped<CreateDriverUseCase>();
 builder.Services.AddScoped<VerifyAccountUseCase>();
 builder.Services.AddScoped<CreateTransporterUseCase>();
 builder.Services.AddScoped<LoginUseCase>();
@@ -90,9 +97,34 @@ var smtpSettings = new SmtpSettings
     EnableSsl = true
 };
 
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+
+        ValidIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER"),
+        ValidAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE"),
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(
+                Environment.GetEnvironmentVariable("JWT_KEY")!
+            )
+        )
+    };
+});
+
 builder.Services.AddSingleton(smtpSettings);
 
 
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -108,9 +140,13 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 
+app.UseMiddleware<JwtMiddleware>();
+
+app.UseAuthorization();
 
 app.MapControllers();
-app.Run();
 
+app.Run();
 
