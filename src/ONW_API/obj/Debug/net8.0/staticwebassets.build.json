@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "cnSWTDMqK2H+vhpcZUcM/WIRcg60b5cQc9G5I7ixYw4=",
+  "Source": "ONW_API",
+  "BasePath": "_content/ONW_API",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}
