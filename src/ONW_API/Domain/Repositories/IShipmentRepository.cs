@@ -18,5 +18,6 @@ namespace ONW_API.Domain.Repositories
         Task<List<Shipment>> GetActiveShipmentsAsync(int year, int month);
         Task<int> GetNextTrackingNumberAsync(int year);
         Task<List<Shipment>> GetRecentShipmentsAsync(int limit);
+        Task<Shipment?> GetByTrackingCodeAsync(string trackingCode);
     }
 }

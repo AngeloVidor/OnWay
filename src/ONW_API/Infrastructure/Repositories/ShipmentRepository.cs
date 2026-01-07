@@ -95,6 +95,15 @@ public sealed class ShipmentRepository : IShipmentRepository
         return count + 1;
     }
 
+    public async Task<Shipment?> GetByTrackingCodeAsync(string trackingCode)
+    {
+        return await _context.Shipments
+            .Include(s => s.Products)
+            .Include(s => s.TrackingEvents)
+            .FirstOrDefaultAsync(s => s.TrackingCode == trackingCode);
+    }
+
+
 }
 
 
