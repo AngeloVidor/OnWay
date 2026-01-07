@@ -139,3 +139,6 @@ C:\Users\angel\OnWay\src\ONW_API\obj\Debug\net8.0\refint\ONW_API.dll
 C:\Users\angel\OnWay\src\ONW_API\obj\Debug\net8.0\ONW_API.pdb
 C:\Users\angel\OnWay\src\ONW_API\obj\Debug\net8.0\ONW_API.genruntimeconfig.cache
 C:\Users\angel\OnWay\src\ONW_API\obj\Debug\net8.0\ref\ONW_API.dll
+C:\Users\angel\OnWay\src\ONW_API\bin\Debug\net8.0\DotNetEnv.dll
+C:\Users\angel\OnWay\src\ONW_API\bin\Debug\net8.0\Sprache.dll
+C:\Users\angel\OnWay\src\ONW_API\obj\Debug\net8.0\ONW_API.sourcelink.json

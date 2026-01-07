@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using ONW_API.Domain.Entities;
 using OnWay.API.Domain.Entities;
 
 namespace ONW_API.Infrastructure.Data
@@ -10,6 +11,7 @@ namespace ONW_API.Infrastructure.Data
     public sealed class OnWayDbContext : DbContext
     {
         public DbSet<Transporter> Transporters => Set<Transporter>();
+        public DbSet<TransporterVerification> TransporterVerifications => Set<TransporterVerification>();
 
         public OnWayDbContext(DbContextOptions<OnWayDbContext> options)
             : base(options) { }

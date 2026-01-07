@@ -1,40 +1,42 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using ONW_API.Domain.Entities;
 using ONW_API.Domain.Repositories;
 using OnWay.API.Domain.Entities;
+using OnWay.Application.Email;
 using OnWay.Domain.Transporters.ValueObjects;
 
-namespace ONW_API.Application.Transporters
+namespace ONW_API.Application.Transporters;
+
+public sealed class CreateTransporterUseCase
 {
-    public sealed class CreateTransporterUseCase
+    private readonly ITransporterVerificationRepository _verificationRepository;
+    private readonly IEmailSender _emailSender;
+
+    public CreateTransporterUseCase(
+        ITransporterVerificationRepository verificationRepository,
+        IEmailSender emailSender)
     {
-        private readonly ITransporterRepository _repository;
+        _verificationRepository = verificationRepository;
+        _emailSender = emailSender;
+    }
 
-        public CreateTransporterUseCase(ITransporterRepository repository)
-        {
-            _repository = repository;
-        }
+    public async Task ExecuteAsync(CreateTransporterCommand command)
+    {
+        var verification = TransporterVerification.Create(
+            command.Name,
+            Email.Create(command.Email),
+            PhoneNumber.Create(command.Phone),
+            Password.Create(command.Password)
+        );
 
-        public async Task<Guid> ExecuteAsync(CreateTransporterCommand command)
-        {
-            var email = Email.Create(command.Email);
+        await _verificationRepository.AddAsync(verification);
+        await _verificationRepository.SaveChangesAsync();
 
-            if (await _repository.EmailExistsAsync(email))
-                throw new InvalidOperationException("Email já cadastrado");
-
-            var transporter = Transporter.Create(
-                command.Name,
-                email,
-                PhoneNumber.Create(command.Phone),
-                Password.Create(command.Password)
-            );
-
-            await _repository.AddAsync(transporter);
-            await _repository.SaveChangesAsync();
-
-            return transporter.Id;
-        }
+        await _emailSender.SendAsync(
+            verification.Email.Value,
+            "Verificação de Conta - OnWay",
+            $"Seu código de verificação é: {verification.Code}"
+        );
     }
 }
+
+

@@ -17,12 +17,7 @@ public sealed class TransportersController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateTransporterCommand command)
     {
-        var transporterId = await _useCase.ExecuteAsync(command);
-
-        return CreatedAtAction(
-            nameof(Create),
-            new { id = transporterId },
-            new { id = transporterId }
-        );
+        await _useCase.ExecuteAsync(command);
+        return Accepted();
     }
 }
