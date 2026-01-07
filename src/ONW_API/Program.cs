@@ -7,6 +7,7 @@ using Microsoft.OpenApi.Models;
 using ONW_API.Application.Auth;
 using ONW_API.Application.Drivers;
 using ONW_API.Application.Shipment;
+using ONW_API.Application.Shipments;
 using ONW_API.Application.Tokens;
 using ONW_API.Application.Transporters;
 using ONW_API.Domain.Repositories;
@@ -78,6 +79,9 @@ builder.Services.AddScoped<LoginUseCase>();
 builder.Services.AddScoped<CreateShipmentUseCase>();
 builder.Services.AddScoped<UpdateShipmentStatusUseCase>();
 builder.Services.AddScoped<GetShipmentsByStatusUseCase>();
+builder.Services.AddScoped<GetRecentShipmentsUseCase>();
+builder.Services.AddScoped<CreateShipmentUseCase>();
+
 
 
 builder.Services.Configure<JwtSettings>(options =>

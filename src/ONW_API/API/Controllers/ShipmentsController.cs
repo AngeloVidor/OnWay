@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using ONW_API.Application.Security;
 using ONW_API.Application.Shipment;
+using ONW_API.Application.Shipments;
 using ONW_API.Domain.ValueObjects;
 
 namespace ONW_API.API.Controllers
@@ -16,14 +17,17 @@ namespace ONW_API.API.Controllers
         private readonly CreateShipmentUseCase _useCase;
         private readonly UpdateShipmentStatusUseCase _updateShipmentStatusUseCase;
         private readonly GetShipmentsByStatusUseCase _getShipmentsByStatusUseCase;
+        private readonly GetRecentShipmentsUseCase _getRecentShipmentsUseCase;
 
 
 
-        public ShipmentsController(CreateShipmentUseCase useCase, UpdateShipmentStatusUseCase updateShipmentStatusUseCase, GetShipmentsByStatusUseCase getShipmentsByStatusUseCase)
+
+        public ShipmentsController(CreateShipmentUseCase useCase, UpdateShipmentStatusUseCase updateShipmentStatusUseCase, GetShipmentsByStatusUseCase getShipmentsByStatusUseCase, GetRecentShipmentsUseCase getRecentShipmentsUseCase)
         {
             _useCase = useCase;
             _updateShipmentStatusUseCase = updateShipmentStatusUseCase;
             _getShipmentsByStatusUseCase = getShipmentsByStatusUseCase;
+            _getRecentShipmentsUseCase = getRecentShipmentsUseCase;
         }
 
         [HttpPost]
@@ -88,6 +92,13 @@ namespace ONW_API.API.Controllers
         {
             var request = new GetShipmentsByStatusRequest { Year = year, Month = month };
             var result = await _getShipmentsByStatusUseCase.ExecuteAsync(ShipmentStatus.Delayed, request);
+            return Ok(result);
+        }
+
+        [HttpGet("recent")]
+        public async Task<IActionResult> GetRecentShipments([FromQuery] int limit = 10)
+        {
+            var result = await _getRecentShipmentsUseCase.ExecuteAsync(limit);
             return Ok(result);
         }
     }
