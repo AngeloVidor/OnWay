@@ -28,6 +28,7 @@ namespace ONW_API.Infrastructure.Auth
                 new Claim(ClaimTypes.NameIdentifier, transporter.Id.ToString()),
                 new Claim(ClaimTypes.Name, transporter.Name),
                 new Claim(ClaimTypes.Email, transporter.Email.Value),
+                new Claim(ClaimTypes.Role, "Transporter")
             };
 
             var key = new SymmetricSecurityKey(
