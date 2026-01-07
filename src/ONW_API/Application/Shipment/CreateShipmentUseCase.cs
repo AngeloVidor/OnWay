@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using ONW_API.Domain.Repositories;
 using ONW_API.Domain.ValueObjects;
 using OnWay.API.Domain.Entities;
@@ -21,6 +22,8 @@ public sealed class CreateShipmentUseCase
 
         var products = command.Products.Select(p => new Product(p.Name, p.Quantity, p.Weight)).ToList();
 
+        int nextNumber = await _shipmentRepository.GetNextTrackingNumberAsync(DateTime.UtcNow.Year);
+
         var shipment = new Domain.Entities.Shipment(
             transporterId,
             origin,
@@ -28,7 +31,8 @@ public sealed class CreateShipmentUseCase
             command.PickupDate,
             command.EstimatedDeliveryDate,
             command.Notes,
-            products
+            products,
+            () => nextNumber
         );
 
         await _shipmentRepository.AddAsync(shipment);
@@ -43,6 +47,15 @@ public sealed class CreateShipmentUseCase
         if (shipment == null) throw new InvalidOperationException("Shipment não encontrado");
 
         shipment.AssignDriver(driverId);
-        await _shipmentRepository.SaveChangesAsync();
+        //_shipmentRepository.Update(shipment);
+
+        try
+        {
+            await _shipmentRepository.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            throw new InvalidOperationException("Falha ao atribuir motorista: Shipment foi alterado ou removido.");
+        }
     }
 }

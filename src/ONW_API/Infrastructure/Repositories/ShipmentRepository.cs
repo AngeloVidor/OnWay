@@ -20,6 +20,7 @@ public sealed class ShipmentRepository : IShipmentRepository
     {
         return await _context.Shipments
             .Include(s => s.Products)
+            .Include(s => s.TrackingEvents)
             .FirstOrDefaultAsync(s => s.Id == id);
     }
 
@@ -59,6 +60,20 @@ public sealed class ShipmentRepository : IShipmentRepository
             .ToListAsync();
     }
 
+    public async Task<List<Shipment>> GetRecentShipmentsAsync(int limit)
+    {
+        return await _context.Shipments
+            .Include(s => s.Products)
+            .Include(s => s.Origin)
+            .Include(s => s.Destination)
+            .Include(s => s.TrackingEvents)
+            .OrderByDescending(s => s.CreatedAt)
+            .Take(limit)
+            .ToListAsync();
+    }
+
+
+
     public async Task<List<Shipment>> GetActiveShipmentsAsync(int year, int month)
     {
         var startDate = new DateTime(year, month, 1);
@@ -72,6 +87,14 @@ public sealed class ShipmentRepository : IShipmentRepository
                         && s.CreatedAt >= startDate && s.CreatedAt < endDate)
             .ToListAsync();
     }
+
+    public async Task<int> GetNextTrackingNumberAsync(int year)
+    {
+        var count = await _context.Shipments
+            .CountAsync(s => s.CreatedAt.Year == year);
+        return count + 1;
+    }
+
 }
 
 
