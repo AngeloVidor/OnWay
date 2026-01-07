@@ -13,6 +13,7 @@ namespace ONW_API.Infrastructure.Data
         public DbSet<Transporter> Transporters => Set<Transporter>();
         public DbSet<TransporterVerification> TransporterVerifications => Set<TransporterVerification>();
         public DbSet<Driver> Drivers => Set<Driver>();
+        public DbSet<Shipment> Shipments => Set<Shipment>();
 
         public OnWayDbContext(DbContextOptions<OnWayDbContext> options)
             : base(options) { }
