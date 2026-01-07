@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ONW_API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+559cdcadcc20e20b7caae86426e66eadea9a353a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f38beb200f194dcbc1bba239031babe5505d38d7")]
 [assembly: System.Reflection.AssemblyProductAttribute("ONW_API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ONW_API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -15,12 +15,15 @@ namespace ONW_API.API.Controllers
     {
         private readonly CreateShipmentUseCase _useCase;
         private readonly UpdateShipmentStatusUseCase _updateShipmentStatusUseCase;
+        private readonly GetShipmentsByStatusUseCase _getShipmentsByStatusUseCase;
 
 
-        public ShipmentsController(CreateShipmentUseCase useCase, UpdateShipmentStatusUseCase updateShipmentStatusUseCase)
+
+        public ShipmentsController(CreateShipmentUseCase useCase, UpdateShipmentStatusUseCase updateShipmentStatusUseCase, GetShipmentsByStatusUseCase getShipmentsByStatusUseCase)
         {
             _useCase = useCase;
             _updateShipmentStatusUseCase = updateShipmentStatusUseCase;
+            _getShipmentsByStatusUseCase = getShipmentsByStatusUseCase;
         }
 
         [HttpPost]
@@ -54,6 +57,38 @@ namespace ONW_API.API.Controllers
 
             await _updateShipmentStatusUseCase.ExecuteAsync(request);
             return NoContent();
+        }
+
+        [HttpGet("active")]
+        public async Task<IActionResult> GetActiveShipments([FromQuery] int year, [FromQuery] int month)
+        {
+            var request = new GetShipmentsByStatusRequest { Year = year, Month = month };
+            var result = await _getShipmentsByStatusUseCase.ExecuteAsync(ShipmentStatus.Pending, request);
+            return Ok(result);
+        }
+
+        [HttpGet("in-transit")]
+        public async Task<IActionResult> GetInTransitShipments([FromQuery] int year, [FromQuery] int month)
+        {
+            var request = new GetShipmentsByStatusRequest { Year = year, Month = month };
+            var result = await _getShipmentsByStatusUseCase.ExecuteAsync(ShipmentStatus.InTransit, request);
+            return Ok(result);
+        }
+
+        [HttpGet("delivered")]
+        public async Task<IActionResult> GetDeliveredShipments([FromQuery] int year, [FromQuery] int month)
+        {
+            var request = new GetShipmentsByStatusRequest { Year = year, Month = month };
+            var result = await _getShipmentsByStatusUseCase.ExecuteAsync(ShipmentStatus.Delivered, request);
+            return Ok(result);
+        }
+
+        [HttpGet("delayed")]
+        public async Task<IActionResult> GetDelayedShipments([FromQuery] int year, [FromQuery] int month)
+        {
+            var request = new GetShipmentsByStatusRequest { Year = year, Month = month };
+            var result = await _getShipmentsByStatusUseCase.ExecuteAsync(ShipmentStatus.Delayed, request);
+            return Ok(result);
         }
     }
 
