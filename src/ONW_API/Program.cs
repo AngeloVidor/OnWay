@@ -81,6 +81,7 @@ builder.Services.AddScoped<UpdateShipmentStatusUseCase>();
 builder.Services.AddScoped<GetShipmentsByStatusUseCase>();
 builder.Services.AddScoped<GetRecentShipmentsUseCase>();
 builder.Services.AddScoped<CreateShipmentUseCase>();
+builder.Services.AddScoped<TrackShipmentUseCase>();
 
 
 
