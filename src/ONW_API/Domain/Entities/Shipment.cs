@@ -21,6 +21,9 @@ namespace ONW_API.Domain.Entities
         public Guid? DriverId { get; private set; }
         public List<Product> Products { get; private set; } = new();
 
+        public ShipmentStatus Status { get; private set; } = ShipmentStatus.Pending;
+
+
         public DateTime CreatedAt { get; private set; }
 
         private Shipment() { }
@@ -37,11 +40,17 @@ namespace ONW_API.Domain.Entities
             Notes = notes;
             Products = products ?? new List<Product>();
             CreatedAt = DateTime.UtcNow;
+            Status = ShipmentStatus.Pending;
         }
-
+        
         public void AssignDriver(Guid driverId)
         {
             DriverId = driverId;
+        }
+
+        public void UpdateStatus(ShipmentStatus status)
+        {
+            Status = status;
         }
     }
 }

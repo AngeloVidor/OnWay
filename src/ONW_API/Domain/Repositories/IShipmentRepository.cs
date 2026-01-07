@@ -12,5 +12,6 @@ namespace ONW_API.Domain.Repositories
         Task<Shipment?> GetByIdAsync(Guid id);
         Task<List<Shipment>> GetByTransporterIdAsync(Guid transporterId);
         Task SaveChangesAsync();
+        void Update(Shipment shipment);
     }
 }

@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ONW_API.Domain.Entities;
-using OnWay.API.Domain.Entities;
 
 namespace OnWay.Infrastructure.Configurations;
 
@@ -43,5 +42,11 @@ public sealed class ShipmentConfiguration : IEntityTypeConfiguration<Shipment>
 
         builder.Property(x => x.DriverId);
         builder.Property(x => x.CreatedAt).IsRequired();
+
+        // Mapeando enum como string
+        builder.Property(x => x.Status)
+               .HasConversion<string>()
+               .IsRequired()
+               .HasMaxLength(50);
     }
 }
