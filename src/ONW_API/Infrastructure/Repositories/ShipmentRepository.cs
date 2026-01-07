@@ -3,6 +3,7 @@ using OnWay.API.Domain.Entities;
 using ONW_API.Domain.Repositories;
 using ONW_API.Infrastructure.Data;
 using ONW_API.Domain.Entities;
+using ONW_API.Domain.ValueObjects;
 
 namespace OnWay.Infrastructure.Repositories;
 
@@ -44,4 +45,33 @@ public sealed class ShipmentRepository : IShipmentRepository
     {
         await _context.SaveChangesAsync();
     }
+
+    public async Task<List<Shipment>> GetShipmentsByStatusAndMonthAsync(ShipmentStatus status, int year, int month)
+    {
+        var startDate = new DateTime(year, month, 1);
+        var endDate = startDate.AddMonths(1);
+
+        return await _context.Shipments
+            .Include(s => s.Products)
+            .Include(s => s.Origin)
+            .Include(s => s.Destination)
+            .Where(s => s.Status == status && s.CreatedAt >= startDate && s.CreatedAt < endDate)
+            .ToListAsync();
+    }
+
+    public async Task<List<Shipment>> GetActiveShipmentsAsync(int year, int month)
+    {
+        var startDate = new DateTime(year, month, 1);
+        var endDate = startDate.AddMonths(1);
+
+        return await _context.Shipments
+            .Include(s => s.Products)
+            .Include(s => s.Origin)
+            .Include(s => s.Destination)
+            .Where(s => (s.Status == ShipmentStatus.Pending || s.Status == ShipmentStatus.InTransit)
+                        && s.CreatedAt >= startDate && s.CreatedAt < endDate)
+            .ToListAsync();
+    }
 }
+
+

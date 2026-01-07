@@ -76,6 +76,8 @@ builder.Services.AddScoped<VerifyAccountUseCase>();
 builder.Services.AddScoped<CreateTransporterUseCase>();
 builder.Services.AddScoped<LoginUseCase>();
 builder.Services.AddScoped<CreateShipmentUseCase>();
+builder.Services.AddScoped<UpdateShipmentStatusUseCase>();
+builder.Services.AddScoped<GetShipmentsByStatusUseCase>();
 
 
 builder.Services.Configure<JwtSettings>(options =>
