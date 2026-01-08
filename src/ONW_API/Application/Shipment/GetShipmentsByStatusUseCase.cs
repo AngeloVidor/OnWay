@@ -20,10 +20,21 @@ namespace ONW_API.Application.Shipment
         {
             if (status == ShipmentStatus.Pending || status == ShipmentStatus.InTransit)
             {
-                return await _shipmentRepository.GetActiveShipmentsAsync(request.Year, request.Month);
+                return await _shipmentRepository.GetActiveShipmentsAsync(
+                    request.TransporterId,
+                    request.Year,
+                    request.Month
+                );
             }
 
-            return await _shipmentRepository.GetShipmentsByStatusAndMonthAsync(status, request.Year, request.Month);
+            return await _shipmentRepository.GetShipmentsByStatusAndMonthAsync(
+                status,
+                request.TransporterId,
+                request.Year,
+                request.Month
+            );
         }
+
+
     }
 }

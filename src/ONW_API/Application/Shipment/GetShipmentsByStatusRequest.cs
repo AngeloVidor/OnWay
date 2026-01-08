@@ -9,5 +9,6 @@ namespace ONW_API.Application.Shipment
     {
         public int Year { get; set; }
         public int Month { get; set; }
+        public Guid TransporterId { get; set; }
     }
 }

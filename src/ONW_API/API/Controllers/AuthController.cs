@@ -13,8 +13,6 @@ public sealed class AuthController : ControllerBase
     private readonly VerifyAccountUseCase _verifyAccountUseCase;
     private readonly CreateTransporterUseCase _createTransporterUseCase;
 
-
-
     public AuthController(LoginUseCase useCase, VerifyAccountUseCase verifyAccountUseCase, CreateTransporterUseCase createTransporterUseCase)
     {
         _useCase = useCase;

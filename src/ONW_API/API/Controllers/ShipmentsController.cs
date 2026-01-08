@@ -66,41 +66,90 @@ namespace ONW_API.API.Controllers
         [HttpGet("active")]
         public async Task<IActionResult> GetActiveShipments([FromQuery] int year, [FromQuery] int month)
         {
-            var request = new GetShipmentsByStatusRequest { Year = year, Month = month };
-            var result = await _getShipmentsByStatusUseCase.ExecuteAsync(ShipmentStatus.Pending, request);
+            var transporterId = ClaimsHelper.GetUserId(User);
+
+            var request = new GetShipmentsByStatusRequest
+            {
+                Year = year,
+                Month = month,
+                TransporterId = transporterId
+            };
+
+            var result = await _getShipmentsByStatusUseCase
+                .ExecuteAsync(ShipmentStatus.Pending, request);
+
             return Ok(result);
         }
+
 
         [HttpGet("in-transit")]
         public async Task<IActionResult> GetInTransitShipments([FromQuery] int year, [FromQuery] int month)
         {
-            var request = new GetShipmentsByStatusRequest { Year = year, Month = month };
-            var result = await _getShipmentsByStatusUseCase.ExecuteAsync(ShipmentStatus.InTransit, request);
+            var transporterId = ClaimsHelper.GetUserId(User);
+
+            var request = new GetShipmentsByStatusRequest
+            {
+                TransporterId = transporterId,
+                Year = year,
+                Month = month
+            };
+
+            var result = await _getShipmentsByStatusUseCase
+                .ExecuteAsync(ShipmentStatus.InTransit, request);
+
             return Ok(result);
         }
+
 
         [HttpGet("delivered")]
         public async Task<IActionResult> GetDeliveredShipments([FromQuery] int year, [FromQuery] int month)
         {
-            var request = new GetShipmentsByStatusRequest { Year = year, Month = month };
-            var result = await _getShipmentsByStatusUseCase.ExecuteAsync(ShipmentStatus.Delivered, request);
+            var transporterId = ClaimsHelper.GetUserId(User);
+
+            var request = new GetShipmentsByStatusRequest
+            {
+                TransporterId = transporterId,
+                Year = year,
+                Month = month
+            };
+
+            var result = await _getShipmentsByStatusUseCase
+                .ExecuteAsync(ShipmentStatus.Delivered, request);
+
             return Ok(result);
         }
+
 
         [HttpGet("delayed")]
         public async Task<IActionResult> GetDelayedShipments([FromQuery] int year, [FromQuery] int month)
         {
-            var request = new GetShipmentsByStatusRequest { Year = year, Month = month };
-            var result = await _getShipmentsByStatusUseCase.ExecuteAsync(ShipmentStatus.Delayed, request);
+            var transporterId = ClaimsHelper.GetUserId(User);
+
+            var request = new GetShipmentsByStatusRequest
+            {
+                TransporterId = transporterId,
+                Year = year,
+                Month = month
+            };
+
+            var result = await _getShipmentsByStatusUseCase
+                .ExecuteAsync(ShipmentStatus.Delayed, request);
+
             return Ok(result);
         }
+
 
         [HttpGet("recent")]
         public async Task<IActionResult> GetRecentShipments([FromQuery] int limit = 10)
         {
-            var result = await _getRecentShipmentsUseCase.ExecuteAsync(limit);
+            var transporterId = ClaimsHelper.GetUserId(User);
+
+            var result = await _getRecentShipmentsUseCase
+                .ExecuteAsync(transporterId, limit);
+
             return Ok(result);
         }
+
     }
 
 }
