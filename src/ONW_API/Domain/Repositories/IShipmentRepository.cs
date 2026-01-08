@@ -14,10 +14,10 @@ namespace ONW_API.Domain.Repositories
         Task<List<Shipment>> GetByTransporterIdAsync(Guid transporterId);
         Task SaveChangesAsync();
         void Update(Shipment shipment);
-        Task<List<Shipment>> GetShipmentsByStatusAndMonthAsync(ShipmentStatus status, int year, int month);
-        Task<List<Shipment>> GetActiveShipmentsAsync(int year, int month);
+        Task<List<Shipment>> GetShipmentsByStatusAndMonthAsync(ShipmentStatus status, Guid transporterId, int year, int month);
+        Task<List<Shipment>> GetActiveShipmentsAsync(Guid transporterId, int year, int month);
         Task<int> GetNextTrackingNumberAsync(int year);
-        Task<List<Shipment>> GetRecentShipmentsAsync(int limit);
+        Task<List<Shipment>> GetRecentShipmentsAsync(Guid transporterId, int limit);
         Task<Shipment?> GetByTrackingCodeAsync(string trackingCode);
     }
 }

@@ -13,13 +13,14 @@ namespace ONW_API.Application.Shipments
             _shipmentRepository = shipmentRepository;
         }
 
-        public async Task<List<RecentShipmentDto>> ExecuteAsync(int limit = 10)
+        public async Task<List<RecentShipmentDto>> ExecuteAsync(Guid transporterId, int limit = 10)
         {
-            var shipments = await _shipmentRepository.GetRecentShipmentsAsync(limit);
+            var shipments = await _shipmentRepository
+                .GetRecentShipmentsAsync(transporterId, limit);
 
             var result = shipments.Select(s => new RecentShipmentDto
             {
-                ShipmentCode = $"ONW-{s.CreatedAt.Year}-{s.Id.ToString().Substring(0, 3)}",
+                TrackingCode = s.TrackingCode,
                 Status = s.Status.ToString(),
                 Route = $"{s.Origin.City}, {s.Origin.State} → {s.Destination.City}, {s.Destination.State}",
                 Products = s.Products.Select(p => new ProductDto

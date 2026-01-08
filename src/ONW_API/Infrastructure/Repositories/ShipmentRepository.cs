@@ -47,7 +47,7 @@ public sealed class ShipmentRepository : IShipmentRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task<List<Shipment>> GetShipmentsByStatusAndMonthAsync(ShipmentStatus status, int year, int month)
+    public async Task<List<Shipment>> GetShipmentsByStatusAndMonthAsync(ShipmentStatus status, Guid transporterId, int year, int month)
     {
         var startDate = new DateTime(year, month, 1);
         var endDate = startDate.AddMonths(1);
@@ -56,25 +56,31 @@ public sealed class ShipmentRepository : IShipmentRepository
             .Include(s => s.Products)
             .Include(s => s.Origin)
             .Include(s => s.Destination)
-            .Where(s => s.Status == status && s.CreatedAt >= startDate && s.CreatedAt < endDate)
+            .Where(s =>
+                s.TransporterId == transporterId &&
+                s.Status == status &&
+                s.CreatedAt >= startDate &&
+                s.CreatedAt < endDate
+            )
             .ToListAsync();
     }
 
-    public async Task<List<Shipment>> GetRecentShipmentsAsync(int limit)
+
+    public async Task<List<Shipment>> GetRecentShipmentsAsync(Guid transporterId, int limit)
     {
         return await _context.Shipments
             .Include(s => s.Products)
             .Include(s => s.Origin)
             .Include(s => s.Destination)
             .Include(s => s.TrackingEvents)
+            .Where(s => s.TransporterId == transporterId)
             .OrderByDescending(s => s.CreatedAt)
             .Take(limit)
             .ToListAsync();
     }
 
 
-
-    public async Task<List<Shipment>> GetActiveShipmentsAsync(int year, int month)
+    public async Task<List<Shipment>> GetActiveShipmentsAsync(Guid transporterId, int year, int month)
     {
         var startDate = new DateTime(year, month, 1);
         var endDate = startDate.AddMonths(1);
@@ -83,8 +89,12 @@ public sealed class ShipmentRepository : IShipmentRepository
             .Include(s => s.Products)
             .Include(s => s.Origin)
             .Include(s => s.Destination)
-            .Where(s => (s.Status == ShipmentStatus.Pending || s.Status == ShipmentStatus.InTransit)
-                        && s.CreatedAt >= startDate && s.CreatedAt < endDate)
+            .Where(s =>
+                s.TransporterId == transporterId &&
+                (s.Status == ShipmentStatus.Pending || s.Status == ShipmentStatus.InTransit) &&
+                s.CreatedAt >= startDate &&
+                s.CreatedAt < endDate
+            )
             .ToListAsync();
     }
 
