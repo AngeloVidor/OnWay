@@ -26,9 +26,19 @@ namespace OnWay.Infrastructure.Repositories
             return await _context.Vehicles.AnyAsync(v => v.Id == vehicleId);
         }
 
+        public async Task<Vehicle?> GetByIdAsync(Guid vehicleId)
+        {
+            return await _context.Vehicles.FirstOrDefaultAsync(v => v.Id == vehicleId);
+        }
+
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();
+        }
+
+        public void Update(Vehicle vehicle)
+        {
+            _context.Vehicles.Update(vehicle);
         }
     }
 }

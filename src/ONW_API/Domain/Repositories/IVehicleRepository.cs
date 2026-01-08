@@ -9,5 +9,7 @@ namespace ONW_API.Domain.Repositories
         Task AddAsync(Vehicle vehicle);
         Task<bool> ExistsAsync(Guid vehicleId);
         Task SaveChangesAsync();
+        Task<Vehicle?> GetByIdAsync(Guid vehicleId);
+        void Update(Vehicle vehicle);
     }
 }

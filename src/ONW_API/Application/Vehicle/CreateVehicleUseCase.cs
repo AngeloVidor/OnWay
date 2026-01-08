@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using ONW_API.Domain.Entities;
 using ONW_API.Domain.Repositories;
+using ONW_API.Domain.ValueObjects;
 
 namespace ONW_API.Application.Vehicles
 {
@@ -16,7 +17,7 @@ namespace ONW_API.Application.Vehicles
 
         public async Task<Vehicle> ExecuteAsync(string plate, string model, Guid transporterId)
         {
-            var vehicle = new Vehicle(plate, model, transporterId);
+            var vehicle = new Vehicle(plate, model, transporterId, VehicleStatus.Available);
 
             await _repository.AddAsync(vehicle);
             await _repository.SaveChangesAsync();
