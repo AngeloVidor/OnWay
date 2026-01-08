@@ -26,8 +26,7 @@ namespace OnWay.Infrastructure.Configurations
                 origin.Property(o => o.Address).HasColumnName("OriginAddress").IsRequired().HasMaxLength(200);
                 origin.Property(o => o.City).HasColumnName("OriginCity").IsRequired().HasMaxLength(100);
                 origin.Property(o => o.State).HasColumnName("OriginState").IsRequired().HasMaxLength(50);
-                origin.Property(o => o.Latitude).HasColumnName("OriginLat").IsRequired();
-                origin.Property(o => o.Longitude).HasColumnName("OriginLng").IsRequired();
+
             });
 
             builder.OwnsOne(s => s.Destination, destination =>
@@ -35,8 +34,7 @@ namespace OnWay.Infrastructure.Configurations
                 destination.Property(d => d.Address).HasColumnName("DestinationAddress").IsRequired().HasMaxLength(200);
                 destination.Property(d => d.City).HasColumnName("DestinationCity").IsRequired().HasMaxLength(100);
                 destination.Property(d => d.State).HasColumnName("DestinationState").IsRequired().HasMaxLength(50);
-                destination.Property(d => d.Latitude).HasColumnName("DestinationLat").IsRequired();
-                destination.Property(d => d.Longitude).HasColumnName("DestinationLng").IsRequired();
+
             });
 
             builder.HasMany(s => s.Packages)

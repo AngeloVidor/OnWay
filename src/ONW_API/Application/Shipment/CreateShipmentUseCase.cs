@@ -1,61 +1,54 @@
-// using Microsoft.EntityFrameworkCore;
-// using ONW_API.Domain.Repositories;
-// using ONW_API.Domain.ValueObjects;
-// using OnWay.API.Domain.Entities;
-// using OnWay.Domain.ValueObjects;
+// CreateShipmentUseCase.cs
+using System.Runtime.Intrinsics.Arm;
+using ONW_API.API.DTOs;
+using ONW_API.Application.Services;
+using ONW_API.Domain.Entities;
+using ONW_API.Domain.Repositories;
+using ONW_API.Domain.ValueObjects;
 
-// namespace ONW_API.Application.Shipment;
+namespace ONW_API.Application.UseCases
+{
+    public sealed class CreateShipmentUseCase
+    {
+        private readonly IShipmentRepository _repository;
+        private readonly ITrackingNumberGenerator _trackingGenerator;
 
-// public sealed class CreateShipmentUseCase
-// {
-//     private readonly IShipmentRepository _shipmentRepository;
 
-//     public CreateShipmentUseCase(IShipmentRepository shipmentRepository)
-//     {
-//         _shipmentRepository = shipmentRepository;
-//     }
+        public CreateShipmentUseCase(IShipmentRepository repository, ITrackingNumberGenerator trackingGenerator)
+        {
+            _repository = repository;
+            _trackingGenerator = trackingGenerator;
+        }
 
-//     public async Task<Guid> ExecuteAsync(CreateShipmentCommand command, Guid transporterId)
-//     {
-//         var origin = new Location(command.OriginAddress, command.OriginCity, command.OriginState);
-//         var destination = new Location(command.DestinationAddress, command.DestinationCity, command.DestinationState);
+        public async Task<Domain.Entities.Shipment> ExecuteAsync(Guid transporterId, LocationDto originDto, LocationDto destinationDto)
+        {
+            var origin = new Location(
+                originDto.Address,
+                originDto.City,
+                originDto.State
+            );
 
-//         var products = command.Products.Select(p => new Product(p.Name, p.Quantity, p.Weight)).ToList();
+            var destination = new Location(
+                destinationDto.Address,
+                destinationDto.City,
+                destinationDto.State
+            );
 
-//         int nextNumber = await _shipmentRepository.GetNextTrackingNumberAsync(DateTime.UtcNow.Year);
+            var year = DateTime.UtcNow.Year;
+            var nextTrackingNumber = await _repository.GetNextTrackingNumberAsync(year);
 
-//         var shipment = new Domain.Entities.Shipment(
-//             transporterId,
-//             origin,
-//             destination,
-//             command.PickupDate,
-//             command.EstimatedDeliveryDate,
-//             command.Notes,
-//             products,
-//             () => nextNumber
-//         );
+            var shipment = new Domain.Entities.Shipment(
+                transporterId,
+                origin,
+                destination,
+                () => nextTrackingNumber
+            );
 
-//         await _shipmentRepository.AddAsync(shipment);
-//         await _shipmentRepository.SaveChangesAsync();
+            await _repository.AddAsync(shipment);
+            await _repository.SaveChangesAsync();
 
-//         return shipment.Id;
-//     }
+            return shipment;
+        }
+    }
 
-//     public async Task AssignDriverAsync(Guid shipmentId, Guid driverId)
-//     {
-//         var shipment = await _shipmentRepository.GetByIdAsync(shipmentId);
-//         if (shipment == null) throw new InvalidOperationException("Shipment não encontrado");
-
-//         shipment.AssignDriver(driverId);
-//         //_shipmentRepository.Update(shipment);
-
-//         try
-//         {
-//             await _shipmentRepository.SaveChangesAsync();
-//         }
-//         catch (DbUpdateConcurrencyException)
-//         {
-//             throw new InvalidOperationException("Falha ao atribuir motorista: Shipment foi alterado ou removido.");
-//         }
-//     }
-// }
+}

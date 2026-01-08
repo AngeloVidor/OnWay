@@ -27,9 +27,6 @@ namespace OnWay.Infrastructure.Configurations
             builder.Property(d => d.TransporterId)
                    .IsRequired();
 
-            builder.Property(d => d.VehicleId) 
-                   .IsRequired();
-
             builder.OwnsOne(d => d.Phone, phone =>
             {
                 phone.Property(p => p.Value)
@@ -37,11 +34,6 @@ namespace OnWay.Infrastructure.Configurations
                      .IsRequired()
                      .HasMaxLength(20);
             });
-
-            builder.HasOne<Vehicle>()
-                   .WithMany()
-                   .HasForeignKey(d => d.VehicleId)
-                   .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

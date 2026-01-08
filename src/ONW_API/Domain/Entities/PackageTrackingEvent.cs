@@ -7,6 +7,8 @@ public sealed class PackageTrackingEvent
     public Guid? DriverId { get; private set; }
     public Location? Location { get; private set; }
 
+    protected PackageTrackingEvent() { }
+
     public PackageTrackingEvent(Guid packageId, string description, Guid? driverId = null, Location? location = null)
     {
         Id = Guid.NewGuid();

@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using ONW_API.Domain.Entities;
 using ONW_API.Domain.Repositories;
 using ONW_API.Infrastructure.Data;
+using OnWay.Domain.Transporters.ValueObjects;
 
 namespace OnWay.Infrastructure.Repositories;
 
@@ -19,9 +20,14 @@ public sealed class DriverRepository : IDriverRepository
         await _context.Drivers.AddAsync(driver);
     }
 
-    public async Task<Driver?> GetByIdAsync(Guid id)
+    public void Update(Driver driver)
     {
-        return await _context.Drivers.FindAsync(id);
+        _context.Drivers.Update(driver);
+    }
+
+    public async Task<Driver?> GetByIdAsync(Guid driverId)
+    {
+        return await _context.Drivers.FirstOrDefaultAsync(d => d.Id == driverId);
     }
 
     public async Task<IEnumerable<Driver>> GetByTransporterAsync(Guid transporterId)
@@ -35,4 +41,5 @@ public sealed class DriverRepository : IDriverRepository
     {
         await _context.SaveChangesAsync();
     }
+
 }

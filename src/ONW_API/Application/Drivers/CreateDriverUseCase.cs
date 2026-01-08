@@ -1,37 +1,30 @@
-// using System;
-// using System.Collections.Generic;
-// using System.Linq;
-// using System.Threading.Tasks;
-// using ONW_API.Domain.Entities;
-// using ONW_API.Domain.Repositories;
-// using OnWay.Domain.Transporters.ValueObjects;
+using System;
+using System.Threading.Tasks;
+using OnWay.Domain.Transporters.ValueObjects;
+using ONW_API.Domain.Repositories;
+using ONW_API.Domain.Entities;
 
-// namespace ONW_API.Application.Drivers
-// {
-//     public sealed class CreateDriverUseCase
-//     {
-//         private readonly IDriverRepository _driverRepository;
+namespace ONW_API.Application.Drivers
+{
+    public sealed class CreateDriverUseCase
+    {
+        private readonly IDriverRepository _repository;
 
-//         public CreateDriverUseCase(IDriverRepository driverRepository)
-//         {
-//             _driverRepository = driverRepository;
-//         }
+        public CreateDriverUseCase(IDriverRepository repository)
+        {
+            _repository = repository;
+        }
 
-//         public async Task<Guid> ExecuteAsync(CreateDriverCommand command, Guid transporterId)
-//         {
-//             var driver = Driver.Create(
-//                 command.Name,
-//                 PhoneNumber.Create(command.Phone),
-//                 command.Vehicle,
-//                 command.VehiclePlate,
-//                 transporterId
-//             );
+        public async Task<Driver> ExecuteAsync(Guid transporterId, string name, string phone)
+        {
+            var phoneNumber = new PhoneNumber(phone);
+            var driver = Driver.Create(name, phoneNumber, transporterId);
 
-//             await _driverRepository.AddAsync(driver);
-//             await _driverRepository.SaveChangesAsync();
+            await _repository.AddAsync(driver);
+            await _repository.SaveChangesAsync();
 
-//             return driver.Id;
-//         }
-//     }
+            return driver;
+        }
 
-// }
+    }
+}

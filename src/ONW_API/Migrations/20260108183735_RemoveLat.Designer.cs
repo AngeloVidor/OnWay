@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ONW_API.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using ONW_API.Infrastructure.Data;
 namespace ONW_API.Migrations
 {
     [DbContext(typeof(OnWayDbContext))]
-    partial class OnWayDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260108183735_RemoveLat")]
+    partial class RemoveLat
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,7 +46,12 @@ namespace ONW_API.Migrations
                     b.Property<Guid>("TransporterId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("VehicleId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("VehicleId");
 
                     b.ToTable("Drivers", (string)null);
                 });
@@ -200,6 +208,11 @@ namespace ONW_API.Migrations
 
             modelBuilder.Entity("Driver", b =>
                 {
+                    b.HasOne("ONW_API.Domain.Entities.Vehicle", null)
+                        .WithMany()
+                        .HasForeignKey("VehicleId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.OwnsOne("OnWay.Domain.Transporters.ValueObjects.PhoneNumber", "Phone", b1 =>
                         {
                             b1.Property<Guid>("DriverId")

@@ -15,10 +15,10 @@ namespace ONW_API.Domain.Entities
         public Vehicle(string plate, string model, Guid transporterId)
         {
             if (string.IsNullOrWhiteSpace(plate))
-                throw new ArgumentException("Placa do veículo é obrigatória");
+                throw new ArgumentException("Vehicle plate is required");
 
             if (string.IsNullOrWhiteSpace(model))
-                throw new ArgumentException("Modelo do veículo é obrigatório");
+                throw new ArgumentException("Vehicle model is required");
 
             Id = Guid.NewGuid();
             Plate = plate.Trim();

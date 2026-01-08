@@ -6,9 +6,7 @@ namespace ONW_API.Application.Drivers;
 
 public sealed class CreateDriverCommand
 {
-    public string Name { get; set; } = "";
-    public string Phone { get; set; } = "";
-    public string Vehicle { get; set; } = "";
-    public string VehiclePlate { get; set; } = "";
+    public string Name { get; set; } = null!;
+    public string Phone { get; set; } = null!;
 }
 

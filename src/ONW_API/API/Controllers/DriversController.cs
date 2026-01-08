@@ -1,31 +1,43 @@
-// using System.Security.Claims;
-// using Microsoft.AspNetCore.Mvc;
-// using ONW_API.Application.Drivers;
-// using ONW_API.Application.Security;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
+using ONW_API.Application.Drivers;
+using ONW_API.Application.Security;
 
-// namespace OnWay.API.Controllers;
+namespace OnWay.API.Controllers;
 
-// [ApiController]
-// [Route("api/drivers")]
-// public sealed class DriversController : ControllerBase
-// {
-//     private readonly CreateDriverUseCase _useCase;
+[ApiController]
+[Route("api/drivers")]
+public sealed class DriversController : ControllerBase
+{
+    private readonly CreateDriverUseCase _useCase;
 
-//     public DriversController(CreateDriverUseCase useCase)
-//     {
-//         _useCase = useCase;
-//     }
+    public DriversController(CreateDriverUseCase useCase)
+    {
+        _useCase = useCase;
+    }
 
-//     [HttpPost]
-//     public async Task<IActionResult> Create([FromBody] CreateDriverCommand command)
-//     {
-//         var transporterId = ClaimsHelper.GetUserId(User);
-//         if (transporterId == Guid.Empty)
-//         {
-//             return Unauthorized();
-//         }
-//         var driverId = await _useCase.ExecuteAsync(command, transporterId);
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateDriverCommand request)
+    {
+        var transporterId = ClaimsHelper.GetUserId(User);
 
-//         return CreatedAtAction(nameof(Create), new { id = driverId }, new { id = driverId });
-//     }
-// }
+        try
+        {
+            var driver = await _useCase.ExecuteAsync(
+                transporterId,
+                request.Name,
+                request.Phone
+            );
+
+            return Ok(driver);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+
+
+
+
+}

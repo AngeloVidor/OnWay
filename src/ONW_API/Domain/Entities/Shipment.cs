@@ -26,14 +26,12 @@ namespace ONW_API.Domain.Entities
 
         public Shipment(
             Guid transporterId,
-            Guid vehicleId,
             Location origin,
             Location destination,
             Func<int> trackingNumberGenerator)
         {
             Id = Guid.NewGuid();
             TransporterId = transporterId;
-            VehicleId = vehicleId;
             Origin = origin;
             Destination = destination;
 
@@ -47,6 +45,11 @@ namespace ONW_API.Domain.Entities
         public void AssignDriver(Guid driverId)
         {
             DriverId = driverId;
+        }
+
+        public void AssignVehicle(Guid vehicleId)
+        {
+            VehicleId = vehicleId;
         }
 
         public void ChangeVehicle(Guid newVehicleId)

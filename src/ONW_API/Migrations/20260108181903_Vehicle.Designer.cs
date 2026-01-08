@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ONW_API.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using ONW_API.Infrastructure.Data;
 namespace ONW_API.Migrations
 {
     [DbContext(typeof(OnWayDbContext))]
-    partial class OnWayDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260108181903_Vehicle")]
+    partial class Vehicle
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,7 +25,7 @@ namespace ONW_API.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Driver", b =>
+            modelBuilder.Entity("ONW_API.Domain.Entities.Driver", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -43,7 +46,12 @@ namespace ONW_API.Migrations
                     b.Property<Guid>("TransporterId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("VehicleId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("VehicleId");
 
                     b.ToTable("Drivers", (string)null);
                 });
@@ -198,8 +206,14 @@ namespace ONW_API.Migrations
                     b.ToTable("PackageTrackingEvents", (string)null);
                 });
 
-            modelBuilder.Entity("Driver", b =>
+            modelBuilder.Entity("ONW_API.Domain.Entities.Driver", b =>
                 {
+                    b.HasOne("ONW_API.Domain.Entities.Vehicle", null)
+                        .WithMany()
+                        .HasForeignKey("VehicleId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.OwnsOne("OnWay.Domain.Transporters.ValueObjects.PhoneNumber", "Phone", b1 =>
                         {
                             b1.Property<Guid>("DriverId")
@@ -242,6 +256,14 @@ namespace ONW_API.Migrations
                                 .HasColumnType("nvarchar(100)")
                                 .HasColumnName("DestinationCity");
 
+                            b1.Property<double>("Latitude")
+                                .HasColumnType("float")
+                                .HasColumnName("DestinationLat");
+
+                            b1.Property<double>("Longitude")
+                                .HasColumnType("float")
+                                .HasColumnName("DestinationLng");
+
                             b1.Property<string>("State")
                                 .IsRequired()
                                 .HasMaxLength(50)
@@ -272,6 +294,14 @@ namespace ONW_API.Migrations
                                 .HasMaxLength(100)
                                 .HasColumnType("nvarchar(100)")
                                 .HasColumnName("OriginCity");
+
+                            b1.Property<double>("Latitude")
+                                .HasColumnType("float")
+                                .HasColumnName("OriginLat");
+
+                            b1.Property<double>("Longitude")
+                                .HasColumnType("float")
+                                .HasColumnName("OriginLng");
 
                             b1.Property<string>("State")
                                 .IsRequired()
@@ -578,21 +608,25 @@ namespace ONW_API.Migrations
 
                             b1.Property<string>("Address")
                                 .IsRequired()
-                                .HasMaxLength(200)
-                                .HasColumnType("nvarchar(200)")
-                                .HasColumnName("LocationAddress");
+                                .HasColumnType("nvarchar(max)");
 
                             b1.Property<string>("City")
                                 .IsRequired()
-                                .HasMaxLength(100)
-                                .HasColumnType("nvarchar(100)")
-                                .HasColumnName("LocationCity");
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<double>("Latitude")
+                                .HasMaxLength(50)
+                                .HasColumnType("float")
+                                .HasColumnName("LocationLatitude");
+
+                            b1.Property<double>("Longitude")
+                                .HasMaxLength(50)
+                                .HasColumnType("float")
+                                .HasColumnName("LocationLongitude");
 
                             b1.Property<string>("State")
                                 .IsRequired()
-                                .HasMaxLength(50)
-                                .HasColumnType("nvarchar(50)")
-                                .HasColumnName("LocationState");
+                                .HasColumnType("nvarchar(max)");
 
                             b1.HasKey("PackageTrackingEventId");
 

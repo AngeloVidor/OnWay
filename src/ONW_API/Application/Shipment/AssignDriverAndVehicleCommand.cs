@@ -5,6 +5,6 @@ using System.Threading.Tasks;
 
 namespace ONW_API.Application.Shipment
 {
-    public sealed record AssignDriverCommand(Guid ShipmentId, Guid DriverId);
+    public sealed record AssignDriverAndVehicleCommand(Guid ShipmentId, Guid DriverId, Guid VehicleId);
 
 }
