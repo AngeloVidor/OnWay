@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using ONW_API.Application.Auth;
+using ONW_API.Application.Deliveries;
 using ONW_API.Application.Drivers;
 using ONW_API.Application.Packages;
 using ONW_API.Application.Services;
@@ -76,10 +77,10 @@ builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddScoped<IDriverRepository, DriverRepository>();
 builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
 builder.Services.AddScoped<IPackageRepository, PackageRepository>();
-
-
 builder.Services.AddScoped<IShipmentRepository, ShipmentRepository>();
+
 builder.Services.AddScoped<CreateDriverUseCase>();
+builder.Services.AddScoped<StartRouteUseCase>();
 builder.Services.AddScoped<VerifyAccountUseCase>();
 builder.Services.AddScoped<CreateTransporterUseCase>();
 builder.Services.AddScoped<LoginUseCase>();

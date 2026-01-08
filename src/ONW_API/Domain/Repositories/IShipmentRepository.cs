@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ONW_API.Application.Deliveries;
 using ONW_API.Domain.Entities;
 using ONW_API.Domain.ValueObjects;
 
@@ -19,5 +20,6 @@ namespace ONW_API.Domain.Repositories
         Task<int> GetNextTrackingNumberAsync(int year);
         // Task<List<Shipment>> GetRecentShipmentsAsync(Guid transporterId, int limit);
         // Task<Shipment?> GetByTrackingCodeAsync(string trackingCode);
+        Task<ShipmentDriverVehicleDto?> GetShipmentWithVehicleByDriverAsync(Guid driverId);
     }
 }

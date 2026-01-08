@@ -31,9 +31,14 @@ public sealed class Driver
         return new Driver(name, phone, transporterId);
     }
 
-    public void AssignToShipment()
+    public void UpdateStatus(DriverStatus newStatus)
     {
-        Status = DriverStatus.OnRoute;
+        Status = newStatus;
+    }
+
+    public void Waiting()
+    {
+        Status = DriverStatus.Waiting;
     }
 
     public void FinishShipment()

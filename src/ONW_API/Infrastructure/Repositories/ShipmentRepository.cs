@@ -4,6 +4,7 @@ using ONW_API.Domain.Repositories;
 using ONW_API.Infrastructure.Data;
 using ONW_API.Domain.Entities;
 using ONW_API.Domain.ValueObjects;
+using ONW_API.Application.Deliveries;
 
 namespace OnWay.Infrastructure.Repositories;
 
@@ -45,6 +46,21 @@ public sealed class ShipmentRepository : IShipmentRepository
     public async Task<Shipment?> GetByIdAsync(Guid id)
     {
         return await _context.Shipments.FindAsync(id);
+    }
+
+    public async Task<ShipmentDriverVehicleDto?> GetShipmentWithVehicleByDriverAsync(Guid driverId)
+    {
+        return await _context.Shipments
+            .Where(s => s.DriverId == driverId)
+            .Select(s => new ShipmentDriverVehicleDto
+            {
+                ShipmentId = s.Id,
+                TrackingCode = s.TrackingCode,
+                ShipmentStatus = s.Status,
+                DriverId = s.DriverId.Value,
+                VehicleId = s.VehicleId
+            })
+            .FirstOrDefaultAsync();
     }
 
     public async Task SaveChangesAsync()

@@ -42,6 +42,11 @@ namespace ONW_API.Domain.Entities
             TrackingCode = $"ONW-{CreatedAt.Year}-{number:D3}";
         }
 
+        public void UpdateStatus(ShipmentStatus newStatus)
+        {
+            Status = newStatus;
+        }
+
         public void AssignDriver(Guid driverId)
         {
             DriverId = driverId;
@@ -60,16 +65,6 @@ namespace ONW_API.Domain.Entities
         public void AddPackage(Package package)
         {
             Packages.Add(package);
-        }
-
-        public void Start()
-        {
-            Status = ShipmentStatus.InTransit;
-        }
-
-        public void Finish()
-        {
-            Status = ShipmentStatus.Delivered;
         }
     }
 }

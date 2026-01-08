@@ -27,16 +27,9 @@ public sealed class Package
         AddEvent("Package created");
     }
 
-    public void MarkOutForDelivery(Guid? driverId, Location location)
+    public void UpdateStatus(PackageStatus newStatus)
     {
-        Status = PackageStatus.OutForDelivery;
-        AddEvent("Package out for delivery", driverId, location);
-    }
-
-    public void Deliver(Guid? driverId, Location location)
-    {
-        Status = PackageStatus.Delivered;
-        AddEvent("Package delivered", driverId, location);
+        Status = newStatus;
     }
 
     private void AddEvent(string description, Guid? driverId = null, Location? location = null)

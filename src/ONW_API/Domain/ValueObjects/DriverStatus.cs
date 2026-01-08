@@ -9,6 +9,7 @@ namespace ONW_API.Domain.ValueObjects
     {
         Available = 1,
         OnRoute = 2,
-        Unavailable = 3
+        Unavailable = 3,
+        Waiting = 4
     }
 }
