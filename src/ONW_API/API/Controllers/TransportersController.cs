@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using ONW_API.Application.Security;
 using ONW_API.Application.Transporters;
 
 namespace OnWay.API.Controllers;
@@ -8,10 +9,12 @@ namespace OnWay.API.Controllers;
 public sealed class TransportersController : ControllerBase
 {
     private readonly CreateTransporterUseCase _useCase;
+    private readonly GetTransporterByIdUseCase _getTransporterByIdUseCase;
 
-    public TransportersController(CreateTransporterUseCase useCase)
+    public TransportersController(CreateTransporterUseCase useCase, GetTransporterByIdUseCase getTransporterByIdUseCase)
     {
         _useCase = useCase;
+        _getTransporterByIdUseCase = getTransporterByIdUseCase;
     }
 
     [HttpPost]
@@ -20,4 +23,21 @@ public sealed class TransportersController : ControllerBase
         await _useCase.ExecuteAsync(command);
         return Accepted();
     }
+
+    [HttpGet("transporter")]
+    public async Task<IActionResult> GetTransporter()
+    {
+        var transporterId = ClaimsHelper.GetUserId(User);
+
+        if (transporterId == Guid.Empty)
+            return Unauthorized();
+
+        var transporter = await _getTransporterByIdUseCase.ExecuteAsync(transporterId);
+
+        if (transporter is null)
+            return NotFound();
+
+        return Ok(transporter);
+    }
+
 }
