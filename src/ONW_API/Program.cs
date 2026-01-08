@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using ONW_API.Application.Auth;
 using ONW_API.Application.Drivers;
+using ONW_API.Application.Packages;
 using ONW_API.Application.Services;
 using ONW_API.Application.Shipment;
 //using ONW_API.Application.Shipments;
@@ -74,6 +75,8 @@ builder.Services.AddScoped<ITransporterVerificationRepository, TransporterVerifi
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddScoped<IDriverRepository, DriverRepository>();
 builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
+builder.Services.AddScoped<IPackageRepository, PackageRepository>();
+
 
 builder.Services.AddScoped<IShipmentRepository, ShipmentRepository>();
 builder.Services.AddScoped<CreateDriverUseCase>();
@@ -91,6 +94,7 @@ builder.Services.AddScoped<CreateVehicleUseCase>();
 builder.Services.AddScoped<AssignVehicleUseCase>();
 builder.Services.AddScoped<AssignDriverUseCase>();
 builder.Services.AddScoped<AssignDriverAndVehicleUseCase>();
+builder.Services.AddScoped<AddPackageUseCase>();
 
 
 builder.Services.Configure<JwtSettings>(options =>

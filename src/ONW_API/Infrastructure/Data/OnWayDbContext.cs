@@ -15,6 +15,7 @@ namespace ONW_API.Infrastructure.Data
         public DbSet<Driver> Drivers => Set<Driver>();
         public DbSet<Shipment> Shipments => Set<Shipment>();
         public DbSet<Vehicle> Vehicles => Set<Vehicle>();
+        public DbSet<Package> Packages => Set<Package>();
 
         public OnWayDbContext(DbContextOptions<OnWayDbContext> options)
             : base(options) { }

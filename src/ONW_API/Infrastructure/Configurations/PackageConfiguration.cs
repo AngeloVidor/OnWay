@@ -11,22 +11,40 @@ namespace OnWay.Infrastructure.Configurations
             builder.ToTable("Packages");
             builder.HasKey(p => p.Id);
 
+            builder.Property(p => p.TrackingCode)
+                   .IsRequired();
+
             builder.Property(p => p.Status)
                    .HasConversion<string>()
                    .IsRequired()
                    .HasMaxLength(50);
 
+            builder.Property(p => p.ShipmentId)
+                   .IsRequired();
+
             builder.OwnsOne(p => p.Recipient, recipient =>
             {
-                recipient.Property(r => r.Name).HasColumnName("RecipientName").IsRequired().HasMaxLength(200);
+                recipient.Property(r => r.Name)
+                         .HasColumnName("RecipientName")
+                         .IsRequired()
+                         .HasMaxLength(200);
+
                 recipient.OwnsOne(r => r.Email, e =>
                 {
-                    e.Property(x => x.Value).HasColumnName("RecipientEmail").IsRequired().HasMaxLength(200);
+                    e.Property(x => x.Value)
+                     .HasColumnName("RecipientEmail")
+                     .IsRequired()
+                     .HasMaxLength(200);
                 });
+
                 recipient.OwnsOne(r => r.Phone, ph =>
                 {
-                    ph.Property(x => x.Value).HasColumnName("RecipientPhone").IsRequired().HasMaxLength(20);
+                    ph.Property(x => x.Value)
+                      .HasColumnName("RecipientPhone")
+                      .IsRequired()
+                      .HasMaxLength(20);
                 });
+
                 recipient.OwnsOne(r => r.Address, addr =>
                 {
                     addr.Property(a => a.Street).HasColumnName("RecipientStreet").IsRequired().HasMaxLength(200);
