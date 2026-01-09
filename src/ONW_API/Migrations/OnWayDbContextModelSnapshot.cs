@@ -22,7 +22,7 @@ namespace ONW_API.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("ONW_API.Domain.Entities.Driver", b =>
+            modelBuilder.Entity("Driver", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -43,16 +43,6 @@ namespace ONW_API.Migrations
                     b.Property<Guid>("TransporterId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Vehicle")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("VehiclePlate")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
                     b.HasKey("Id");
 
                     b.ToTable("Drivers", (string)null);
@@ -70,16 +60,6 @@ namespace ONW_API.Migrations
                     b.Property<Guid?>("DriverId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("EstimatedDeliveryDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Notes")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<DateTime>("PickupDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -90,6 +70,9 @@ namespace ONW_API.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("TransporterId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("VehicleId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -121,6 +104,37 @@ namespace ONW_API.Migrations
                     b.ToTable("TransporterVerifications", (string)null);
                 });
 
+            modelBuilder.Entity("ONW_API.Domain.Entities.Vehicle", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Model")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Plate")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("TransporterId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Vehicles", (string)null);
+                });
+
             modelBuilder.Entity("OnWay.API.Domain.Entities.Transporter", b =>
                 {
                     b.Property<Guid>("Id")
@@ -140,7 +154,62 @@ namespace ONW_API.Migrations
                     b.ToTable("Transporters", (string)null);
                 });
 
-            modelBuilder.Entity("ONW_API.Domain.Entities.Driver", b =>
+            modelBuilder.Entity("Package", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("ShipmentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("TrackingCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ShipmentId");
+
+                    b.ToTable("Packages", (string)null);
+                });
+
+            modelBuilder.Entity("PackageTrackingEvent", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<Guid?>("DriverId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("PackageId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PackageId");
+
+                    b.ToTable("PackageTrackingEvents", (string)null);
+                });
+
+            modelBuilder.Entity("Driver", b =>
                 {
                     b.OwnsOne("OnWay.Domain.Transporters.ValueObjects.PhoneNumber", "Phone", b1 =>
                         {
@@ -167,7 +236,7 @@ namespace ONW_API.Migrations
 
             modelBuilder.Entity("ONW_API.Domain.Entities.Shipment", b =>
                 {
-                    b.OwnsOne("OnWay.Domain.ValueObjects.Location", "Destination", b1 =>
+                    b.OwnsOne("Location", "Destination", b1 =>
                         {
                             b1.Property<Guid>("ShipmentId")
                                 .HasColumnType("uniqueidentifier");
@@ -198,7 +267,7 @@ namespace ONW_API.Migrations
                                 .HasForeignKey("ShipmentId");
                         });
 
-                    b.OwnsOne("OnWay.Domain.ValueObjects.Location", "Origin", b1 =>
+                    b.OwnsOne("Location", "Origin", b1 =>
                         {
                             b1.Property<Guid>("ShipmentId")
                                 .HasColumnType("uniqueidentifier");
@@ -229,79 +298,11 @@ namespace ONW_API.Migrations
                                 .HasForeignKey("ShipmentId");
                         });
 
-                    b.OwnsMany("ONW_API.Domain.Entities.ShipmentTrackingEvent", "TrackingEvents", b1 =>
-                        {
-                            b1.Property<Guid>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<DateTime>("Date")
-                                .HasColumnType("datetime2");
-
-                            b1.Property<string>("Description")
-                                .IsRequired()
-                                .HasMaxLength(500)
-                                .HasColumnType("nvarchar(500)");
-
-                            b1.Property<string>("Location")
-                                .IsRequired()
-                                .HasMaxLength(200)
-                                .HasColumnType("nvarchar(200)");
-
-                            b1.Property<Guid>("ShipmentId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.HasKey("Id");
-
-                            b1.HasIndex("ShipmentId");
-
-                            b1.ToTable("ShipmentTrackingEvents", (string)null);
-
-                            b1.WithOwner()
-                                .HasForeignKey("ShipmentId");
-                        });
-
-                    b.OwnsMany("ONW_API.Domain.ValueObjects.Product", "Products", b1 =>
-                        {
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("int");
-
-                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
-
-                            b1.Property<string>("Name")
-                                .IsRequired()
-                                .HasMaxLength(150)
-                                .HasColumnType("nvarchar(150)");
-
-                            b1.Property<int>("Quantity")
-                                .HasColumnType("int");
-
-                            b1.Property<Guid>("ShipmentId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<decimal>("Weight")
-                                .HasColumnType("decimal(18,2)");
-
-                            b1.HasKey("Id");
-
-                            b1.HasIndex("ShipmentId");
-
-                            b1.ToTable("Product");
-
-                            b1.WithOwner()
-                                .HasForeignKey("ShipmentId");
-                        });
-
                     b.Navigation("Destination")
                         .IsRequired();
 
                     b.Navigation("Origin")
                         .IsRequired();
-
-                    b.Navigation("Products");
-
-                    b.Navigation("TrackingEvents");
                 });
 
             modelBuilder.Entity("ONW_API.Domain.Entities.TransporterVerification", b =>
@@ -444,6 +445,185 @@ namespace ONW_API.Migrations
 
                     b.Navigation("Phone")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Package", b =>
+                {
+                    b.HasOne("ONW_API.Domain.Entities.Shipment", null)
+                        .WithMany("Packages")
+                        .HasForeignKey("ShipmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.OwnsOne("ONW_API.Domain.ValueObjects.Recipient", "Recipient", b1 =>
+                        {
+                            b1.Property<Guid>("PackageId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("Name")
+                                .IsRequired()
+                                .HasMaxLength(200)
+                                .HasColumnType("nvarchar(200)")
+                                .HasColumnName("RecipientName");
+
+                            b1.HasKey("PackageId");
+
+                            b1.ToTable("Packages");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PackageId");
+
+                            b1.OwnsOne("ONW_API.Domain.ValueObjects.Address", "Address", b2 =>
+                                {
+                                    b2.Property<Guid>("RecipientPackageId")
+                                        .HasColumnType("uniqueidentifier");
+
+                                    b2.Property<string>("City")
+                                        .IsRequired()
+                                        .HasMaxLength(100)
+                                        .HasColumnType("nvarchar(100)")
+                                        .HasColumnName("RecipientCity");
+
+                                    b2.Property<string>("District")
+                                        .IsRequired()
+                                        .HasMaxLength(100)
+                                        .HasColumnType("nvarchar(100)")
+                                        .HasColumnName("RecipientDistrict");
+
+                                    b2.Property<string>("Number")
+                                        .IsRequired()
+                                        .HasMaxLength(20)
+                                        .HasColumnType("nvarchar(20)")
+                                        .HasColumnName("RecipientNumber");
+
+                                    b2.Property<string>("State")
+                                        .IsRequired()
+                                        .HasMaxLength(50)
+                                        .HasColumnType("nvarchar(50)")
+                                        .HasColumnName("RecipientState");
+
+                                    b2.Property<string>("Street")
+                                        .IsRequired()
+                                        .HasMaxLength(200)
+                                        .HasColumnType("nvarchar(200)")
+                                        .HasColumnName("RecipientStreet");
+
+                                    b2.Property<string>("ZipCode")
+                                        .IsRequired()
+                                        .HasMaxLength(20)
+                                        .HasColumnType("nvarchar(20)")
+                                        .HasColumnName("RecipientZipCode");
+
+                                    b2.HasKey("RecipientPackageId");
+
+                                    b2.ToTable("Packages");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("RecipientPackageId");
+                                });
+
+                            b1.OwnsOne("OnWay.Domain.Transporters.ValueObjects.Email", "Email", b2 =>
+                                {
+                                    b2.Property<Guid>("RecipientPackageId")
+                                        .HasColumnType("uniqueidentifier");
+
+                                    b2.Property<string>("Value")
+                                        .IsRequired()
+                                        .HasMaxLength(200)
+                                        .HasColumnType("nvarchar(200)")
+                                        .HasColumnName("RecipientEmail");
+
+                                    b2.HasKey("RecipientPackageId");
+
+                                    b2.ToTable("Packages");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("RecipientPackageId");
+                                });
+
+                            b1.OwnsOne("OnWay.Domain.Transporters.ValueObjects.PhoneNumber", "Phone", b2 =>
+                                {
+                                    b2.Property<Guid>("RecipientPackageId")
+                                        .HasColumnType("uniqueidentifier");
+
+                                    b2.Property<string>("Value")
+                                        .IsRequired()
+                                        .HasMaxLength(20)
+                                        .HasColumnType("nvarchar(20)")
+                                        .HasColumnName("RecipientPhone");
+
+                                    b2.HasKey("RecipientPackageId");
+
+                                    b2.ToTable("Packages");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("RecipientPackageId");
+                                });
+
+                            b1.Navigation("Address")
+                                .IsRequired();
+
+                            b1.Navigation("Email")
+                                .IsRequired();
+
+                            b1.Navigation("Phone")
+                                .IsRequired();
+                        });
+
+                    b.Navigation("Recipient")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PackageTrackingEvent", b =>
+                {
+                    b.HasOne("Package", null)
+                        .WithMany("TrackingEvents")
+                        .HasForeignKey("PackageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.OwnsOne("Location", "Location", b1 =>
+                        {
+                            b1.Property<Guid>("PackageTrackingEventId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("Address")
+                                .IsRequired()
+                                .HasMaxLength(200)
+                                .HasColumnType("nvarchar(200)")
+                                .HasColumnName("LocationAddress");
+
+                            b1.Property<string>("City")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)")
+                                .HasColumnName("LocationCity");
+
+                            b1.Property<string>("State")
+                                .IsRequired()
+                                .HasMaxLength(50)
+                                .HasColumnType("nvarchar(50)")
+                                .HasColumnName("LocationState");
+
+                            b1.HasKey("PackageTrackingEventId");
+
+                            b1.ToTable("PackageTrackingEvents");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PackageTrackingEventId");
+                        });
+
+                    b.Navigation("Location");
+                });
+
+            modelBuilder.Entity("ONW_API.Domain.Entities.Shipment", b =>
+                {
+                    b.Navigation("Packages");
+                });
+
+            modelBuilder.Entity("Package", b =>
+                {
+                    b.Navigation("TrackingEvents");
                 });
 #pragma warning restore 612, 618
         }

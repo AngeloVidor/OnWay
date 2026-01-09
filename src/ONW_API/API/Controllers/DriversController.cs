@@ -17,15 +17,27 @@ public sealed class DriversController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateDriverCommand command)
+    public async Task<IActionResult> Create([FromBody] CreateDriverCommand request)
     {
         var transporterId = ClaimsHelper.GetUserId(User);
-        if (transporterId == Guid.Empty)
-        {
-            return Unauthorized();
-        }
-        var driverId = await _useCase.ExecuteAsync(command, transporterId);
 
-        return CreatedAtAction(nameof(Create), new { id = driverId }, new { id = driverId });
+        try
+        {
+            var driver = await _useCase.ExecuteAsync(
+                transporterId,
+                request.Name,
+                request.Phone
+            );
+
+            return Ok(driver);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
     }
+
+
+
+
 }

@@ -1,37 +1,30 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using ONW_API.Domain.Entities;
-using ONW_API.Domain.Repositories;
 using OnWay.Domain.Transporters.ValueObjects;
+using ONW_API.Domain.Repositories;
+using ONW_API.Domain.Entities;
 
 namespace ONW_API.Application.Drivers
 {
     public sealed class CreateDriverUseCase
     {
-        private readonly IDriverRepository _driverRepository;
+        private readonly IDriverRepository _repository;
 
-        public CreateDriverUseCase(IDriverRepository driverRepository)
+        public CreateDriverUseCase(IDriverRepository repository)
         {
-            _driverRepository = driverRepository;
+            _repository = repository;
         }
 
-        public async Task<Guid> ExecuteAsync(CreateDriverCommand command, Guid transporterId)
+        public async Task<Driver> ExecuteAsync(Guid transporterId, string name, string phone)
         {
-            var driver = Driver.Create(
-                command.Name,
-                PhoneNumber.Create(command.Phone),
-                command.Vehicle,
-                command.VehiclePlate,
-                transporterId
-            );
+            var phoneNumber = new PhoneNumber(phone);
+            var driver = Driver.Create(name, phoneNumber, transporterId);
 
-            await _driverRepository.AddAsync(driver);
-            await _driverRepository.SaveChangesAsync();
+            await _repository.AddAsync(driver);
+            await _repository.SaveChangesAsync();
 
-            return driver.Id;
+            return driver;
         }
+
     }
-
 }
