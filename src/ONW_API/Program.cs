@@ -7,6 +7,7 @@ using Microsoft.OpenApi.Models;
 using ONW_API.Application.Auth;
 using ONW_API.Application.Deliveries;
 using ONW_API.Application.Drivers;
+using ONW_API.Application.Geolocation;
 using ONW_API.Application.Packages;
 using ONW_API.Application.Services;
 using ONW_API.Application.Shipment;
@@ -17,9 +18,11 @@ using ONW_API.Application.Tokens;
 using ONW_API.Application.Transporters;
 using ONW_API.Application.UseCases;
 using ONW_API.Application.Vehicles;
+using ONW_API.Application.Waze;
 using ONW_API.Domain.Repositories;
 using ONW_API.Infrastructure.Auth;
 using ONW_API.Infrastructure.Data;
+using ONW_API.Infrastructure.OpenRoute;
 using ONW_API.Infrastructure.Repositories;
 using ONW_API.Infrastructure.Security;
 using ONW_API.Infrastructure.SMTP;
@@ -71,6 +74,8 @@ builder.Services.AddDbContext<OnWayDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection"))
 );
+
+
 builder.Services.AddSingleton<ITrackingNumberGenerator, InMemoryTrackingNumberGenerator>();
 builder.Services.AddScoped<ITokenService, JwtTokenService>();
 builder.Services.AddScoped<ITransporterRepository, TransporterRepository>();
@@ -80,6 +85,7 @@ builder.Services.AddScoped<IDriverRepository, DriverRepository>();
 builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
 builder.Services.AddScoped<IPackageRepository, PackageRepository>();
 builder.Services.AddScoped<IShipmentRepository, ShipmentRepository>();
+
 
 builder.Services.AddScoped<CreateDriverUseCase>();
 builder.Services.AddScoped<StartRouteUseCase>();
@@ -95,8 +101,10 @@ builder.Services.AddScoped<AssignDriverUseCase>();
 builder.Services.AddScoped<AssignDriverAndVehicleUseCase>();
 builder.Services.AddScoped<AddPackageUseCase>();
 builder.Services.AddScoped<GetActiveShipmentsUseCase>();
-
-
+builder.Services.AddScoped<GeocodeSearchUseCase>();
+builder.Services.AddScoped<GenerateWazeRouteUseCase>();
+builder.Services.AddScoped<GenerateWazeLinkUseCase>();
+builder.Services.AddHttpClient<GeocodeSearchUseCase>();
 
 builder.Services.Configure<JwtSettings>(options =>
 {
@@ -107,8 +115,8 @@ builder.Services.Configure<JwtSettings>(options =>
         Environment.GetEnvironmentVariable("JWT_DURATION_IN_MINUTES")!
     );
 });
-
 builder.Services.AddSingleton<JwtSettings>();
+
 
 var smtpSettings = new SmtpSettings
 {
@@ -119,8 +127,16 @@ var smtpSettings = new SmtpSettings
     From = Environment.GetEnvironmentVariable("SMTP_FROM")!,
     EnableSsl = true
 };
-
 builder.Services.AddSingleton(smtpSettings);
+
+
+var openRouteSettings = new OpenRouteSettings
+{
+    ApiKey = Environment.GetEnvironmentVariable("OpenRoute_ApiKey")!
+};
+builder.Services.AddSingleton(openRouteSettings);
+
+
 
 builder.Services.AddAuthentication(options =>
 {
@@ -147,15 +163,13 @@ builder.Services.AddAuthentication(options =>
 });
 
 
-
-
 builder.Services.AddAuthorization();
 
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins("http://localhost:8080")
+        policy.WithOrigins("http://localhost:8080") //envirnment
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
