@@ -5,20 +5,20 @@ using ONW_API.API.Requests;
 
 namespace ONW_API.Application.Shipments
 {
-    public class GetRecentShipmentsUseCase
+    public class GetActiveShipmentsUseCase
     {
         private readonly IShipmentRepository _shipmentRepository;
 
-        public GetRecentShipmentsUseCase(IShipmentRepository shipmentRepository)
+        public GetActiveShipmentsUseCase(IShipmentRepository shipmentRepository)
         {
             _shipmentRepository = shipmentRepository;
         }
 
-        public async Task<List<RecentShipmentDto>> ExecuteAsync(Guid transporterId, int limit = 10)
+        public async Task<List<ActiveShipmentDto>> ExecuteAsync(Guid transporterId, int year, int month)
         {
-            var shipments = await _shipmentRepository.GetRecentShipmentsAsync(transporterId, limit);
+            var shipments = await _shipmentRepository.GetActiveShipmentsAsync(transporterId, year, month);
 
-            var result = shipments.Select(s => new RecentShipmentDto
+            var result = shipments.Select(s => new ActiveShipmentDto
             {
                 TrackingCode = s.TrackingCode,
                 Status = s.Status.ToString(),

@@ -9,7 +9,7 @@ namespace ONW_API.API.DTOs
     {
         public string Name { get; set; } = null!;
         public int Quantity { get; set; }
-        public double Weight { get; set; } // kg
+        public double Weight { get; set; }
         public string Status { get; set; } = null!;
     }
 }

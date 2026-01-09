@@ -10,6 +10,8 @@ using ONW_API.Application.Drivers;
 using ONW_API.Application.Packages;
 using ONW_API.Application.Services;
 using ONW_API.Application.Shipment;
+using ONW_API.Application.Shipments;
+
 //using ONW_API.Application.Shipments;
 using ONW_API.Application.Tokens;
 using ONW_API.Application.Transporters;
@@ -85,17 +87,15 @@ builder.Services.AddScoped<VerifyAccountUseCase>();
 builder.Services.AddScoped<CreateTransporterUseCase>();
 builder.Services.AddScoped<LoginUseCase>();
 builder.Services.AddScoped<CreateShipmentUseCase>();
-//builder.Services.AddScoped<UpdateShipmentStatusUseCase>();
-//builder.Services.AddScoped<GetShipmentsByStatusUseCase>();
-//builder.Services.AddScoped<GetRecentShipmentsUseCase>();
-//builder.Services.AddScoped<CreateShipmentUseCase>();
-//builder.Services.AddScoped<TrackShipmentUseCase>();
+builder.Services.AddScoped<GetRecentShipmentsUseCase>();
 builder.Services.AddScoped<GetTransporterByIdUseCase>();
 builder.Services.AddScoped<CreateVehicleUseCase>();
 builder.Services.AddScoped<AssignVehicleUseCase>();
 builder.Services.AddScoped<AssignDriverUseCase>();
 builder.Services.AddScoped<AssignDriverAndVehicleUseCase>();
 builder.Services.AddScoped<AddPackageUseCase>();
+builder.Services.AddScoped<GetActiveShipmentsUseCase>();
+
 
 
 builder.Services.Configure<JwtSettings>(options =>
@@ -119,6 +119,8 @@ var smtpSettings = new SmtpSettings
     From = Environment.GetEnvironmentVariable("SMTP_FROM")!,
     EnableSsl = true
 };
+
+builder.Services.AddSingleton(smtpSettings);
 
 builder.Services.AddAuthentication(options =>
 {
@@ -144,7 +146,7 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddSingleton(smtpSettings);
+
 
 
 builder.Services.AddAuthorization();

@@ -8,7 +8,6 @@ namespace ONW_API.Application.DTOs
 {
     public sealed class CreateShipmentRequest
     {
-        //public Guid VehicleId { get; set; }
         public LocationDto Origin { get; set; } = null!;
         public LocationDto Destination { get; set; } = null!;
     }
