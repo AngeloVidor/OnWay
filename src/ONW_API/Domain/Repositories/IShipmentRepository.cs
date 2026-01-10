@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using ONW_API.Application.Deliveries;
 using ONW_API.Domain.Entities;
 using ONW_API.Domain.ValueObjects;
+using ONW_API.Infrastructure.Responses;
 
 namespace ONW_API.Domain.Repositories
 {
@@ -20,5 +21,6 @@ namespace ONW_API.Domain.Repositories
         Task<List<Shipment>> GetRecentShipmentsAsync(Guid transporterId, int limit);
         Task<Shipment?> GetByTrackingCodeAsync(string trackingCode);
         Task<ShipmentDriverVehicleDto?> GetShipmentWithVehicleByDriverAsync(Guid driverId);
+        Task<List<ShipmentDetailsResponse>> GetShipmentDetailsAsync(Guid shipmentId, Guid transporterId);
     }
 }
