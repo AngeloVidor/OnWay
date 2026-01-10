@@ -22,7 +22,7 @@ using ONW_API.Application.Waze;
 using ONW_API.Domain.Repositories;
 using ONW_API.Infrastructure.Auth;
 using ONW_API.Infrastructure.Data;
-using ONW_API.Infrastructure.OpenRoute;
+using ONW_API.Infrastructure.Geoapify;
 using ONW_API.Infrastructure.Repositories;
 using ONW_API.Infrastructure.Security;
 using ONW_API.Infrastructure.SMTP;
@@ -130,12 +130,11 @@ var smtpSettings = new SmtpSettings
 builder.Services.AddSingleton(smtpSettings);
 
 
-var openRouteSettings = new OpenRouteSettings
+var geoapifySettings = new GeoapifySettings
 {
-    ApiKey = Environment.GetEnvironmentVariable("OpenRoute_ApiKey")!
+    ApiKey = Environment.GetEnvironmentVariable("Geoapify_ApiKey")!
 };
-builder.Services.AddSingleton(openRouteSettings);
-
+builder.Services.AddSingleton(geoapifySettings);
 
 
 builder.Services.AddAuthentication(options =>
