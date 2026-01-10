@@ -1,0 +1,303 @@
+[
+  {
+    "ContainingType": "OnWay.API.Controllers.AuthController",
+    "Method": "Login",
+    "RelativePath": "api/auth/login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "command",
+        "Type": "ONW_API.Application.Auth.LoginCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "OnWay.API.Controllers.AuthController",
+    "Method": "Create",
+    "RelativePath": "api/auth/register",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "command",
+        "Type": "ONW_API.Application.Transporters.CreateTransporterCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "OnWay.API.Controllers.AuthController",
+    "Method": "VerifyAccount",
+    "RelativePath": "api/auth/verify",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "command",
+        "Type": "OnWay.Application.VerifyAccount.VerifyAccountCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ONW_API.API.Controllers.DeliveriesController",
+    "Method": "StartRoute",
+    "RelativePath": "api/Deliveries/start-route",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "driverId",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "OnWay.API.Controllers.DriversController",
+    "Method": "Create",
+    "RelativePath": "api/drivers",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ONW_API.Application.Drivers.CreateDriverCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ONW_API.API.Controllers.PackageController",
+    "Method": "AddPackage",
+    "RelativePath": "api/packages",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "command",
+        "Type": "ONW_API.Application.Packages.AddPackageCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ONW_API.API.Controllers.ShipmentsController",
+    "Method": "Create",
+    "RelativePath": "api/shipments",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ONW_API.Application.DTOs.CreateShipmentRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ONW_API.API.Controllers.ShipmentsController",
+    "Method": "AssignDriver",
+    "RelativePath": "api/shipments/{shipmentId}/assign-driver",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "shipmentId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "command",
+        "Type": "ONW_API.Application.Shipment.AssignDriverCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ONW_API.API.Controllers.ShipmentsController",
+    "Method": "AssignDriverAndVehicle",
+    "RelativePath": "api/shipments/{shipmentId}/assign-driver-vehicle",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "shipmentId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "command",
+        "Type": "ONW_API.Application.Shipment.AssignDriverAndVehicleCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ONW_API.API.Controllers.ShipmentsController",
+    "Method": "AssignVehicle",
+    "RelativePath": "api/shipments/{shipmentId}/assign-vehicle",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "shipmentId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "command",
+        "Type": "ONW_API.Application.Shipment.AssignVehicleCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ONW_API.API.Controllers.ShipmentsController",
+    "Method": "GetActiveShipments",
+    "RelativePath": "api/shipments/active",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "year",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "month",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[ONW_API.API.Requests.ActiveShipmentDto, ONW_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ONW_API.API.Controllers.ShipmentsController",
+    "Method": "GetRecentShipments",
+    "RelativePath": "api/shipments/recent",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "limit",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "OnWay.API.Controllers.TransportersController",
+    "Method": "Create",
+    "RelativePath": "api/transporters",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "command",
+        "Type": "ONW_API.Application.Transporters.CreateTransporterCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "OnWay.API.Controllers.TransportersController",
+    "Method": "GetTransporter",
+    "RelativePath": "api/transporters/transporter",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "OnWay.API.Controllers.VehiclesController",
+    "Method": "Create",
+    "RelativePath": "api/vehicles/{transporterId}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ONW_API.API.DTOs.CreateVehicleDto",
+        "IsRequired": true
+      },
+      {
+        "Name": "transporterId",
+        "Type": "",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ONW_API.API.Controllers.GeolocationController",
+    "Method": "GetCoordinates",
+    "RelativePath": "geolocation/geocode",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "command",
+        "Type": "ONW_API.Application.OpenRoute.GeocodeSearchCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ONW_API.API.Controllers.GeolocationController",
+    "Method": "GenerateWazeRoute",
+    "RelativePath": "geolocation/waze-route",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ONW_API.Application.Geolocation.WazeRouteRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]

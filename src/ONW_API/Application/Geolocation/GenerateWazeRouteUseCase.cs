@@ -32,16 +32,9 @@ namespace ONW_API.Application.Geolocation
           )
             };
 
-            var geoResponse = await _geocodeSearchUseCase.ExecuteAsync(command);
+            var geo = await _geocodeSearchUseCase.ExecuteAsync(command) ?? throw new Exception("Not found");
 
-            if (geoResponse?.Features == null || !geoResponse.Features.Any())
-                return null;
-
-            var coords = geoResponse.Features[0].Geometry.Coordinates;
-            var latitude = coords[1];
-            var longitude = coords[0];
-
-            var wazeUrl = _generateWazeLinkUseCase.Execute(latitude, longitude);
+            var wazeUrl = _generateWazeLinkUseCase.Execute(geo.lat, geo.lon);
 
             return new WazeRouteResponse(wazeUrl);
         }

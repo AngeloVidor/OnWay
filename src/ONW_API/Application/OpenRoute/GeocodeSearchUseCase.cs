@@ -1,57 +1,43 @@
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using System.Web;
 using ONW_API.Application.OpenRoute;
 using ONW_API.Domain.ValueObjects;
-using ONW_API.Infrastructure.OpenRoute;
+using ONW_API.Infrastructure.Geoapify;
 
 namespace ONW_API.Application.Geolocation
 {
     public sealed class GeocodeSearchUseCase
     {
         private readonly HttpClient _httpClient;
-        private readonly OpenRouteSettings _openRoute;
+        private readonly GeoapifySettings _geoapify;
 
-        public GeocodeSearchUseCase(HttpClient httpClient, OpenRouteSettings openRoute)
+        public GeocodeSearchUseCase(HttpClient httpClient, GeoapifySettings geoapify)
         {
             _httpClient = httpClient;
-            _openRoute = openRoute;
+            _geoapify = geoapify;
         }
 
-        public async Task<GeocodeResponse?> ExecuteAsync(GeocodeSearchCommand command)
+        public async Task<Result?> ExecuteAsync(GeocodeSearchCommand command)
         {
-            var queryParams = new Dictionary<string, string>
+            var addressText = $"{command.Address.Number} {command.Address.Street}, {command.Address.City} {command.Address.ZipCode}, {command.Address.State}";
+            var encodedAddress = HttpUtility.UrlEncode(addressText);
+
+            var url = $"https://api.geoapify.com/v1/geocode/search?text={encodedAddress}&format=json&apiKey={_geoapify.ApiKey}";
+
+            var response = await _httpClient.GetFromJsonAsync<GeocodeResponseDto>(url);
+
+            if (response?.Results == null || !response.Results.Any())
+                return null; 
+                
+            var firstResult = response.Results.First();
+
+            return new Result
             {
-                { "api_key", _openRoute.ApiKey },
-                { "country", "BR" }
+                lon = firstResult.Lon,
+                lat = firstResult.Lat
             };
-
-            if (!string.IsNullOrWhiteSpace(command.Address.Street))
-                queryParams["address"] = command.Address.Street;
-
-            if (!string.IsNullOrWhiteSpace(command.Address.Number))
-                queryParams["housenumber"] = command.Address.Number;
-
-            if (!string.IsNullOrWhiteSpace(command.Address.City))
-                queryParams["locality"] = command.Address.City;
-
-            if (!string.IsNullOrWhiteSpace(command.Address.State))
-                queryParams["region"] = command.Address.State;
-
-            if (!string.IsNullOrWhiteSpace(command.Address.ZipCode))
-                queryParams["postalcode"] = command.Address.ZipCode;
-
-            var queryString = string.Join("&",
-                queryParams.Select(kvp => $"{kvp.Key}={Uri.EscapeDataString(kvp.Value)}"));
-
-            var url = $"https://api.openrouteservice.org/geocode/search/structured?{queryString}";
-
-            var response = await _httpClient.GetAsync(url);
-
-            if (!response.IsSuccessStatusCode)
-                return null;
-
-            return await response.Content.ReadFromJsonAsync<GeocodeResponse>();
         }
     }
 

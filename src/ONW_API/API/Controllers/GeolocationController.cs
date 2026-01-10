@@ -16,7 +16,7 @@ namespace ONW_API.API.Controllers
 
         public GeolocationController(
             GeocodeSearchUseCase geocodeSearchUseCase,
-            GenerateWazeRouteUseCase generateWazeRouteUseCase)
+        GenerateWazeRouteUseCase generateWazeRouteUseCase)
         {
             _geocodeSearchUseCase = geocodeSearchUseCase;
             _generateWazeRouteUseCase = generateWazeRouteUseCase;
