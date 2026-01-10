@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using ONW_API.Application.Deliveries;
+using ONW_API.Application.Shipments;
 
 namespace ONW_API.API.Controllers
 {
@@ -10,10 +11,13 @@ namespace ONW_API.API.Controllers
     public class DeliveriesController : ControllerBase
     {
         private readonly StartRouteUseCase _startRouteUseCase;
+        private readonly GetShipmentPackagesUseCase _getShipmentPackagesUseCase;
 
-        public DeliveriesController(StartRouteUseCase startRouteUseCase)
+
+        public DeliveriesController(StartRouteUseCase startRouteUseCase, GetShipmentPackagesUseCase getShipmentPackagesUseCase)
         {
             _startRouteUseCase = startRouteUseCase;
+            _getShipmentPackagesUseCase = getShipmentPackagesUseCase;
         }
 
         [HttpPost("start-route")]
@@ -36,5 +40,20 @@ namespace ONW_API.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("shipments/{shipmentId}/packages")]
+        public async Task<IActionResult> GetShipmentPackages(Guid shipmentId)
+        {
+            if (shipmentId == Guid.Empty)
+                return BadRequest("ShipmentId is required.");
+
+            var packages = await _getShipmentPackagesUseCase.ExecuteAsync(shipmentId);
+
+            if (packages == null || packages.Count == 0)
+                return NotFound("No packages found for this shipment.");
+
+            return Ok(packages);
+        }
+
     }
 }
