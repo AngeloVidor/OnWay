@@ -23,11 +23,13 @@ namespace ONW_API.API.Controllers
         private readonly AssignDriverUseCase _assignDriverUseCase;
         private readonly AssignDriverAndVehicleUseCase _assignDriverAndVehicleUseCase;
         private readonly GetActiveShipmentsUseCase _getActiveShipmentsUseCase;
+        private readonly GetShipmentDetailsUseCase _getShipmentDetailsUseCase;
+
 
         public ShipmentsController(CreateShipmentUseCase createShipmentUseCase,
         AssignVehicleUseCase assignVehicleUseCase, AssignDriverUseCase assignDriverUseCase,
         AssignDriverAndVehicleUseCase assignDriverAndVehicleUseCase,
-        GetRecentShipmentsUseCase getRecentShipmentsUseCase, GetActiveShipmentsUseCase getActiveShipmentsUseCase)
+        GetRecentShipmentsUseCase getRecentShipmentsUseCase, GetActiveShipmentsUseCase getActiveShipmentsUseCase, GetShipmentDetailsUseCase getShipmentDetailsUseCase)
 
         {
             _createShipmentUseCase = createShipmentUseCase;
@@ -37,6 +39,7 @@ namespace ONW_API.API.Controllers
 
             _getRecentShipmentsUseCase = getRecentShipmentsUseCase;
             _getActiveShipmentsUseCase = getActiveShipmentsUseCase;
+            _getShipmentDetailsUseCase = getShipmentDetailsUseCase;
         }
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateShipmentRequest request)
@@ -99,6 +102,22 @@ namespace ONW_API.API.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet("{shipmentId:guid}")]
+        public async Task<IActionResult> GetShipmentDetails(Guid shipmentId)
+        {
+            var transporterId = ClaimsHelper.GetUserId(User);
+
+            var command = new GetShipmentDetailsCommand(shipmentId);
+
+            var result = await _getShipmentDetailsUseCase.ExecuteAsync(command, transporterId);
+
+            if (result is null || !result.Any())
+                return NotFound();
+
+            return Ok(result);
+        }
+
 
     }
 }

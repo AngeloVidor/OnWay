@@ -105,6 +105,7 @@ builder.Services.AddScoped<GeocodeSearchUseCase>();
 builder.Services.AddScoped<GenerateWazeRouteUseCase>();
 builder.Services.AddScoped<GenerateWazeLinkUseCase>();
 builder.Services.AddHttpClient<GeocodeSearchUseCase>();
+builder.Services.AddScoped<GetShipmentDetailsUseCase>();
 
 builder.Services.Configure<JwtSettings>(options =>
 {

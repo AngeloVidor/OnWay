@@ -5,6 +5,7 @@ using ONW_API.Infrastructure.Data;
 using ONW_API.Domain.Entities;
 using ONW_API.Domain.ValueObjects;
 using ONW_API.Application.Deliveries;
+using ONW_API.Infrastructure.Responses;
 
 namespace OnWay.Infrastructure.Repositories;
 
@@ -52,11 +53,7 @@ public sealed class ShipmentRepository : IShipmentRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task<List<Shipment>> GetShipmentsByStatusAndMonthAsync(
-        ShipmentStatus status,
-        Guid transporterId,
-        int year,
-        int month)
+    public async Task<List<Shipment>> GetShipmentsByStatusAndMonthAsync(ShipmentStatus status, Guid transporterId, int year, int month)
     {
         var startDate = new DateTime(year, month, 1);
         var endDate = startDate.AddMonths(1);
@@ -82,10 +79,7 @@ public sealed class ShipmentRepository : IShipmentRepository
             .ToListAsync();
     }
 
-    public async Task<List<Shipment>> GetActiveShipmentsAsync(
-     Guid transporterId,
-     int year,
-     int month)
+    public async Task<List<Shipment>> GetActiveShipmentsAsync(Guid transporterId, int year, int month)
     {
         var startDate = new DateTime(year, month, 1);
         var endDate = startDate.AddMonths(1);
@@ -115,6 +109,39 @@ public sealed class ShipmentRepository : IShipmentRepository
             .Include(s => s.Packages)
             .FirstOrDefaultAsync(s => s.TrackingCode == trackingCode);
     }
+
+    public async Task<List<ShipmentDetailsResponse>> GetShipmentDetailsAsync(Guid shipmentId, Guid transporterId)
+    {
+        return await _context.Shipments
+            .AsNoTracking()
+            .Where(s => s.Id == shipmentId && s.TransporterId == transporterId)
+            .Select(s => new ShipmentDetailsResponse
+            {
+                id = s.Id,
+                transporter_id = s.TransporterId,
+                vehicle_id = s.VehicleId,
+                driver_id = s.DriverId,
+                tracking_code = s.TrackingCode,
+                status = s.Status,
+                created_at = s.CreatedAt,
+
+                origin = s.Origin,
+                destination = s.Destination,
+
+                packages = s.Packages.Select(p => new PackageResponse
+                {
+                    id = p.Id,
+                    tracking_code = p.TrackingCode,
+                    status = p.Status,
+                    created_at = p.CreatedAt,
+                    recipient = p.Recipient
+                }).ToList()
+            })
+            .ToListAsync();
+    }
 }
+
+
+
 
 
