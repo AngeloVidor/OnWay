@@ -45,6 +45,8 @@ namespace ONW_API.API.Controllers
         public async Task<IActionResult> Create([FromBody] CreateShipmentRequest request)
         {
             var transporterId = ClaimsHelper.GetUserId(User);
+            if (transporterId == Guid.Empty)
+                return Unauthorized();
 
             var shipment = await _createShipmentUseCase.ExecuteAsync(
                 transporterId,
@@ -88,6 +90,9 @@ namespace ONW_API.API.Controllers
         public async Task<ActionResult<List<ActiveShipmentDto>>> GetActiveShipments([FromQuery] int year, [FromQuery] int month)
         {
             var transporterId = ClaimsHelper.GetUserId(User);
+            if (transporterId == Guid.Empty)
+                return Unauthorized();
+
             var shipments = await _getActiveShipmentsUseCase.ExecuteAsync(transporterId, year, month);
             return Ok(shipments);
         }
@@ -96,6 +101,8 @@ namespace ONW_API.API.Controllers
         public async Task<IActionResult> GetRecentShipments([FromQuery] int limit = 10)
         {
             var transporterId = ClaimsHelper.GetUserId(User);
+            if (transporterId == Guid.Empty)
+                return Unauthorized();
 
             var result = await _getRecentShipmentsUseCase
                 .ExecuteAsync(transporterId, limit);
@@ -107,6 +114,8 @@ namespace ONW_API.API.Controllers
         public async Task<IActionResult> GetShipmentDetails(Guid shipmentId)
         {
             var transporterId = ClaimsHelper.GetUserId(User);
+            if (transporterId == Guid.Empty)
+                return Unauthorized();
 
             var command = new GetShipmentDetailsCommand(shipmentId);
 
