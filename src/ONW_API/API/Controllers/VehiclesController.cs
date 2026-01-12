@@ -22,6 +22,9 @@ namespace OnWay.API.Controllers
         public async Task<IActionResult> Create([FromBody] CreateVehicleDto request)
         {
             var transporterId = ClaimsHelper.GetUserId(User);
+            if (transporterId == Guid.Empty)
+                return Unauthorized();
+                
             try
             {
                 var vehicle = await _useCase.ExecuteAsync(request.Plate, request.Model, transporterId);

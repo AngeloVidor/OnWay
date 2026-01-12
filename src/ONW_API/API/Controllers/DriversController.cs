@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ONW_API.Application.Drivers;
 using ONW_API.Application.Security;
@@ -7,6 +8,7 @@ namespace OnWay.API.Controllers;
 
 [ApiController]
 [Route("api/drivers")]
+[Authorize(Roles = "Transporter")]
 public sealed class DriversController : ControllerBase
 {
     private readonly CreateDriverUseCase _useCase;
@@ -20,6 +22,8 @@ public sealed class DriversController : ControllerBase
     public async Task<IActionResult> Create([FromBody] CreateDriverCommand request)
     {
         var transporterId = ClaimsHelper.GetUserId(User);
+        if (transporterId == Guid.Empty)
+            return Unauthorized();
 
         try
         {
@@ -36,8 +40,4 @@ public sealed class DriversController : ControllerBase
             return BadRequest(new { error = ex.Message });
         }
     }
-
-
-
-
 }
